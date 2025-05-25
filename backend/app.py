@@ -105,7 +105,7 @@ def listar_maquinas():
     return jsonify(resultado)
 
 @app.route('/maquinas', methods=['POST'])
-def crear_mantenimiento():
+def crear_maquina():
     datos = request.json
     conn = get_connection()
     cursor = conn.cursor()
@@ -130,7 +130,7 @@ def listar_maquinas_en_uso():
     return jsonify(resultado)
 
 @app.route('/maquinas_en_uso', methods=['POST'])
-def crear_mantenimiento():
+def crear_maquina_en_uso():
     datos = request.json
     conn = get_connection()
     cursor = conn.cursor()

@@ -33,7 +33,9 @@ services:
     command: python app.py
   
   frontend:
-    build: ./frontend
+    build: 
+      dockerfile: Dockerfile
+      context: ./frontend
     ports:
       - "3001:3000"
     depends_on:
@@ -43,7 +45,10 @@ services:
       - ./frontend:/app
       - /app/node_modules
     working_dir: /app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     command: npm run dev
+    
 
 volumes:
   mysql_data:

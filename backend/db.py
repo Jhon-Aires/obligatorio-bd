@@ -2,8 +2,8 @@ import mysql.connector
 
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",
+        host="database",  # Docker service name
         user="root",
-        password="root",
+        password="rootdocker",
         database="marloy"
     )

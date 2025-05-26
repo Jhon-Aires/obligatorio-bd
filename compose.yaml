@@ -31,6 +31,19 @@ services:
       - ./backend:/app
     working_dir: /app
     command: python app.py
+  
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
 
 volumes:
   mysql_data:

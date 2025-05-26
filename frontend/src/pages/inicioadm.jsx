@@ -26,8 +26,8 @@ export default function inicioAdm() {
                 </div>
             </nav>
 
-            <div className={styles.content}>
-                <h2 className={styles.welcomeTitle}>Bienvenido Administrador</h2>
+            <div className={classes.content}>
+                <h2 className={classes.welcomeTitle}>Bienvenido Administrador</h2>
             </div>
         </div>
     );

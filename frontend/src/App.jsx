@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from './pages/login';
-import Inicioadm from './pages/inicioadm';
+import Inicioadm from './pages/InicioAdm';
+import Login from "./pages/Login";
 
 export default function App() {
   return (

@@ -1,7 +1,6 @@
-import React from "react";
 import classes from './inicioadm.module.css'
 
-export default function inicioAdm() {
+export default function InicioAdm() {
     return (
         <div className={classes.pageContainer}>
             <nav className={classes.navbar}>

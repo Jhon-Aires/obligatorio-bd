@@ -4,8 +4,6 @@ from db import get_connection
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
 
-
-# #GET y POST de proveedores
 @proveedores_bp.route('/', methods=['GET'])
 def listar_proveedores():
     conn = get_connection()

@@ -4,8 +4,6 @@ from db import get_connection
 registro_consumo_bp = Blueprint('registro_consumo_bp', __name__)
 
 
-
-# #GET y POST de registro_consumo
 @registro_consumo_bp.route('/', methods=['GET'])
 def listar_registro_consumo():
     conn = get_connection()

@@ -3,8 +3,6 @@ from db import get_connection
 
 insumos_bp = Blueprint('insumos_bp', __name__)
 
-
-# #GET y POST de insumos
 @insumos_bp.route('/', methods=['GET'])
 def listar_insumos():
     conn = get_connection()

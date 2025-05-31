@@ -4,7 +4,6 @@ from db import get_connection
 mantenimientos_bp = Blueprint('mantenimeintos_bp', __name__)
 
 
-# #GET y POST de mantenimientos
 @mantenimientos_bp.route('/', methods=['GET'])
 def listar_mantenimientos():
     conn = get_connection()

@@ -3,8 +3,6 @@ from db import get_connection
 
 maquinas_bp = Blueprint('maquinas_bp', __name__)
 
-
-# #GET y POST de maquinas
 @maquinas_bp.route('/', methods=['GET'])
 def listar_maquinas():
     conn = get_connection()

@@ -35,7 +35,7 @@ def editar_cliente():
     conn = get_connection()
     cursor = conn.cursor()
     if 'id' not in datos:
-        return jsonify({"error": "Missing 'id' parameter"}), 400
+        return jsonify({"error": "Falta el parametro id"}), 400
     
     campos_actualizados = []
     values = []
@@ -68,14 +68,41 @@ def editar_cliente():
 @clientes_bp.route('/', methods=['DELETE'])
 def eliminar_cliente():
     datos = request.json
-    conn = get_connection()
+    if 'id' not in datos:
+        return jsonify({"error": "Falta el parámetro id"}), 400
+
+    conn = get_connection() 
     cursor = conn.cursor()
-    cursor.execute(
-        "DELETE FROM clientes WHERE id= %d" %
-        (datos['id'])
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensaje": "cliente eliminado"}), 204
+
+    try:
+        # 1. Consultar si tiene máquinas en uso
+        cursor.execute(
+            "SELECT COUNT(*) FROM maquinas_en_uso WHERE id_cliente = %s",
+            (datos['id'],)
+        )
+        cantidad_maquinas = cursor.fetchone()[0]
+
+        if cantidad_maquinas > 0:
+            return (jsonify({"error": f"El cliente tiene {cantidad_maquinas} máquina(s) en uso. Elimine dichas máquinas."}),409)  
+        # 409 hay un conflicto con el estado actual
+
+        # 2. Eliminar cliente si no tiene máquinas en uso
+        cursor.execute(
+            "DELETE FROM clientes WHERE id = %s",
+            (datos['id'],)
+        )
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Cliente no encontrado"}), 404
+
+        return jsonify({"mensaje": "Cliente eliminado"}), 200
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
 

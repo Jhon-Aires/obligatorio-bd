@@ -48,7 +48,7 @@ def editar_cliente():
             values.append(datos[campo])
 
     if not campos_actualizados:
-        return jsonify({"error": "No fields to update"}), 400
+        return jsonify({"error": "No hay campos para actualizar"}), 400
     
     values.append(datos['id'])  # Como ya tenemos el id, se usa en la condición WHERE
     

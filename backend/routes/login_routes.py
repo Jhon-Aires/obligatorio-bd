@@ -3,7 +3,6 @@ from db import get_connection
 
 login_bp = Blueprint('login_bp', __name__)
 
-
 @login_bp.route('/', methods=['POST'])
 def crear_login():
     datos = request.json

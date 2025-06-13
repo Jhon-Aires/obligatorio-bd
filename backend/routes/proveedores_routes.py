@@ -19,6 +19,12 @@ def crear_proveedor():
     datos = request.json
     conn = get_connection()
     cursor = conn.cursor()
+
+    print(datos)  # Debugging line to check the received data
+    
+    if not datos or 'nombre' not in datos or 'apellido' not in datos or 'contacto' not in datos:
+        return jsonify({"error": "Datos incompletos"}), 400
+    
     cursor.execute(
         "INSERT INTO proveedores (nombre, apellido, contacto) VALUES (%s, %s, %s)",
         (datos['nombre'], datos['apellido'], datos['contacto'])

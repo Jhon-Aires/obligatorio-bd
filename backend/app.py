@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from routes.clientes_routes import clientes_bp
 from routes.insumos_routes import insumos_bp
 from routes.login_routes import login_bp
@@ -11,6 +12,7 @@ from routes.proveedores_routes import proveedores_bp
 from db import get_connection
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.register_blueprint(clientes_bp, url_prefix="/clientes")
 app.register_blueprint(insumos_bp, url_prefix="/insumos")

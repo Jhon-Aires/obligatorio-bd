@@ -1,64 +1,59 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import React, { useState } from 'react';
+import styles from './Login.module.css';
 
-function Login() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const emailParts = email.split("@");
-    
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
+const Login = () => {
+    const [correo, setCorreo] = useState('');
+    const [contrasena, setContrasena] = useState('');
 
-    console.log("Email:", emailParts);
-    setError("");
-    document.alert("Inicio de sesión exitoso (simulado).");
-    navigate("/inicio");
-  };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const credentials = {
+            correo,
+            contrasena
+        };
 
-  return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow-md w-96"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h2>
+        fetch('http://localhost:5001/login/', {
+            method: 'POST',
+            body: JSON.stringify(credentials),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.mensaje === 'Login successful') {
+                console.log('Login successful:', data);
+                alert('Login successful');
+                // Redirect to admin page or dashboard
+            } else {
+                alert(data.mensaje);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error during login');
+        });
+    };
 
-        {error && <div className="text-red-600 mb-4 text-sm">{error}</div>}
+    return (
+        <div className={styles.loginContainer}>
+            <form onSubmit={handleSubmit} className={styles.loginForm}>
+                <h2>Login</h2>
+                <input
+                    type="email"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    placeholder="Correo Electrónico"
+                    required
+                />
+                <input
+                    type="password"
+                    value={contrasena}
+                    onChange={(e) => setContrasena(e.target.value)}
+                    placeholder="Contraseña"
+                    required
+                />
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    );
+};
 
-        <label className="block mb-2">Correo electrónico</label>
-        <input
-          type="email"
-          className="w-full px-3 py-2 border rounded-xl mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="tucorreo@gmail.com"
-        />
-
-        <label className="block mb-2">Contraseña</label>
-        <input
-          type="password"
-          className="w-full px-3 py-2 border rounded-xl mb-4"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
-        >
-          Ingresar
-        </button>
-      </form>
-    </div>
-  );
-}
 export default Login;

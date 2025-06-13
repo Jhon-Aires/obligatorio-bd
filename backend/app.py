@@ -12,6 +12,10 @@ from routes.proveedores_routes import proveedores_bp
 from db import get_connection
 
 app = Flask(__name__)
+# Disable automatic slash redirects
+app.url_map.strict_slashes = False
+
+# Configure CORS
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.register_blueprint(clientes_bp, url_prefix="/clientes")

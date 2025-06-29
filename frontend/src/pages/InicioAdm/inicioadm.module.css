@@ -1,29 +1,72 @@
-.pageContainer{
-    display:flex;
+.pageContainer {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.navbar {
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbarTitle {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.navbarButtons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.navSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #06b00c;
+    border-radius: 0.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .navbarButton {
-    background-color: #08e30f; /* Green */
-    border-radius: 15px;
-    color: white;
-    padding: 15px 32px;
+    background-color: white;
+    border-radius: 0.5rem;
+    color: #08e30f;
+    padding: 0.75rem 1rem;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.navbarButton:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-1px);
 }
 
 .content {
-    padding: 20px;
+    margin-top: 2rem;
 }
 
 .welcomeTitle {
-    font-size: 24px;
+    font-size: 1.5rem;
+    color: #333;
     font-weight: bold;
     font-family: 'Times New Roman', Times, serif;
+    text-align: center;
 }

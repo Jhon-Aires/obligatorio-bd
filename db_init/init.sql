@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS insumos (
     tipo VARCHAR(50) NOT NULL,
     precio_unitario DECIMAL(8,2) NOT NULL,
     id_proveedor INT NOT NULL,
-    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id)
+    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS clientes (
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS maquinas_en_uso (
     modelo VARCHAR(30),
     id_cliente INT,
     ubicacion_cliente VARCHAR(100),
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id),
-    FOREIGN KEY (modelo) REFERENCES maquinas(modelo)
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE,
+    FOREIGN KEY (modelo) REFERENCES maquinas(modelo) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tecnicos (
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS mantenimientos (
     tipo VARCHAR(50) NOT NULL, 
     fecha DATE NOT NULL,
     observaciones VARCHAR(255),
-    FOREIGN KEY (ci_tecnico) REFERENCES tecnicos(ci),
-    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id)
+    FOREIGN KEY (ci_tecnico) REFERENCES tecnicos(ci) ON DELETE CASCADE,
+    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS registro_consumo (
@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS registro_consumo (
     id_insumo  INT NOT NULL, 
     fecha DATE NOT NULL, 
     cantidad_usada  INT NOT NULL,
-    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id),
-    FOREIGN KEY (id_insumo) REFERENCES insumos(id)
+    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_insumo) REFERENCES insumos(id) ON DELETE CASCADE
 ); 
 
 INSERT INTO login (correo, contrasena, es_administrador) VALUES 

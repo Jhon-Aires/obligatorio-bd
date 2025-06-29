@@ -3,7 +3,6 @@ from db import get_connection
 
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
-
 @proveedores_bp.route('/', methods=['GET'])
 def listar_proveedores():
     conn = get_connection()
@@ -78,17 +77,11 @@ def eliminar_proveedor():
 
     conn = get_connection() 
     cursor = conn.cursor()
-        # Consultar si tiene máquinas en uso
+
+    # Elimina directamente. Si hay ON DELETE CASCADE en insumos.id_proveedor,
+    # se borrarán automáticamente los insumos asociados
     cursor.execute(
-        "SELECT COUNT(*) FROM insumos WHERE id_proveedor = %s",(datos['id'],))
-    cantidad_insumos = cursor.fetchone()[0]
-    
-    if cantidad_insumos > 0:
-        return (jsonify({"error": f"Hay {cantidad_insumos} insumo(s) asignados al proveedor. Elimine dichos insumos."}),409)
-    
-    #Elimina proveedor si no tiene insumos asignados
-    cursor.execute(
-        "DELETE FROM proveedores WHERE id = %s",(datos['id'],))
+        "DELETE FROM proveedores WHERE id = %s", (datos['id'],))
     conn.commit()
 
     if cursor.rowcount == 0:

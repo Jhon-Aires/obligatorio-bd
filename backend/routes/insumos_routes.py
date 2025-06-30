@@ -1,31 +1,45 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
+from auth_utils import login_required, admin_required
 
 insumos_bp = Blueprint('insumos_bp', __name__)
 
 @insumos_bp.route('/', methods=['GET'])
+@login_required
 def listar_insumos():
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM insumos")
-    resultado = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(resultado)
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM insumos")
+        resultado = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(resultado), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al listar insumos: {str(e)}"}), 500
 
 @insumos_bp.route('/', methods=['POST'])
+@login_required
 def crear_insumo():
     datos = request.json
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO insumos (descripcion, tipo, precio_unitario, id_proveedor) VALUES (%s, %s, %s, %s)",
-        (datos['descripcion'], datos['tipo'], datos['precio_unitario'], datos['id_proveedor'])
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensaje": "insumo creado"}), 201
+    
+    # Validar campos requeridos
+    if not datos or not all(k in datos for k in ('descripcion', 'tipo', 'precio_unitario', 'id_proveedor')):
+        return jsonify({"error": "Faltan campos requeridos: descripcion, tipo, precio_unitario, id_proveedor"}), 400
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO insumos (descripcion, tipo, precio_unitario, id_proveedor) VALUES (%s, %s, %s, %s)",
+            (datos['descripcion'], datos['tipo'], datos['precio_unitario'], datos['id_proveedor'])
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"mensaje": "Insumo creado exitosamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al crear insumo: {str(e)}"}), 500
 
 #sin hacer
 @insumos_bp.route('/', methods=['PATCH'])

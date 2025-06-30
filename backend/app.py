@@ -9,6 +9,7 @@ from routes.maquinas_en_uso_routes import maquinas_en_uso_bp
 from routes.registro_consumo_routes import registro_consumo_bp
 from routes.tecnicos_routes import tecnicos_bp
 from routes.proveedores_routes import proveedores_bp
+import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = "clave-secreta-cambiar"  # Necesaria para manejar sesión
@@ -18,6 +19,43 @@ app.url_map.strict_slashes = False
 
 # Configure CORS
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# Global error handlers
+@app.errorhandler(401)
+def unauthorized(e):
+    return jsonify({
+        "error": "No autorizado",
+        "mensaje": "Debe iniciar sesión para acceder a este recurso"
+    }), 401
+
+@app.errorhandler(403)
+def forbidden(e):
+    return jsonify({
+        "error": "Acceso denegado",
+        "mensaje": "No tiene permisos para realizar esta acción"
+    }), 403
+
+@app.errorhandler(mysql.connector.Error)
+def database_error(e):
+    return jsonify({
+        "error": "Error de base de datos",
+        "mensaje": "Error interno del servidor"
+    }), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({
+        "error": "Error interno",
+        "mensaje": "Ha ocurrido un error inesperado"
+    }), 500
+
+# Health check endpoint
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "OK",
+        "mensaje": "API funcionando correctamente"
+    }), 200
 
 # Blueprints
 app.register_blueprint(clientes_bp, url_prefix="/clientes")

@@ -1,76 +1,137 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "../../common.module.css";
 
 import { fetchFromApi } from "../../../services/fetch";
-import styles from "./CrearTecnico.module.css";
 
 const CrearTecnico = () => {
-  const [ci, setCi] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [contacto, setContacto] = useState("");
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    ci: "",
+    nombre: "",
+    apellido: "",
+    contacto: "",
+  });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleSubmit = (event) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const tecnico = {
-      ci,
-      nombre,
-      apellido,
-      contacto,
-    };
+    try {
+      // Validar campos requeridos
+      const requiredFields = ["ci", "nombre", "apellido"];
+      const emptyFields = requiredFields.filter(field => !formData[field]);
+      
+      if (emptyFields.length > 0) {
+        setMessage({ 
+          type: "error", 
+          text: `Los siguientes campos son requeridos: ${emptyFields.join(", ")}` 
+        });
+        return;
+      }
 
-    fetchFromApi("/tecnicos/", {
-      method: "POST",
-      body: JSON.stringify(tecnico),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Tecnico creado:", data);
-        alert("Tecnico creado con éxito");
-        // Reset form
-        setCi("");
-        setNombre("");
-        setApellido("");
-        setContacto("");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Error al crear tecnico");
+      const response = await fetchFromApi("/tecnicos/", {
+        method: "POST",
+        body: JSON.stringify({
+          ...formData,
+          ci: Number(formData.ci)
+        }),
       });
+      const data = await response.json();
+      
+      if (data.error) {
+        setMessage({ type: "error", text: `Error: ${data.error} - ${data.mensaje}` });
+      } else {
+        setMessage({ type: "success", text: "Técnico creado con éxito" });
+        setTimeout(() => {
+          navigate("/tecnico/listar");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ type: "error", text: "Error al crear técnico" });
+    }
   };
 
   return (
-    <div className={styles.crearTecnicoContainer}>
-      <form onSubmit={handleSubmit} className={styles.crearTecnicoForm}>
-        <h2>Crear Nuevo Tecnico</h2>
-        <input
-          type='number'
-          value={ci}
-          onChange={(e) => setCi(e.target.value)}
-          placeholder='CI'
-          required
-        />
-        <input
-          type='text'
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          placeholder='Nombre'
-          required
-        />
-        <input
-          type='text'
-          value={apellido}
-          onChange={(e) => setApellido(e.target.value)}
-          placeholder='Apellido'
-          required
-        />
-        <input
-          type='text'
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-          placeholder='Contacto'
-        />
-        <button type='submit'>Crear Tecnico</button>
-      </form>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Crear Nuevo Técnico</h1>
+      
+      <div className={styles.card}>
+        {message.text && (
+          <div className={`${styles.message} ${styles[message.type]}`}>
+            {message.text}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="ci" className={styles.label}>CI</label>
+            <input
+              id="ci"
+              name="ci"
+              type="number"
+              value={formData.ci}
+              onChange={handleChange}
+              className={styles.input}
+              required
+              placeholder="Ingrese la CI del técnico"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="nombre" className={styles.label}>Nombre</label>
+            <input
+              id="nombre"
+              name="nombre"
+              type="text"
+              value={formData.nombre}
+              onChange={handleChange}
+              className={styles.input}
+              required
+              placeholder="Ingrese el nombre del técnico"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="apellido" className={styles.label}>Apellido</label>
+            <input
+              id="apellido"
+              name="apellido"
+              type="text"
+              value={formData.apellido}
+              onChange={handleChange}
+              className={styles.input}
+              required
+              placeholder="Ingrese el apellido del técnico"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="contacto" className={styles.label}>Contacto</label>
+            <input
+              id="contacto"
+              name="contacto"
+              type="text"
+              value={formData.contacto}
+              onChange={handleChange}
+              className={styles.input}
+              placeholder="Ingrese el contacto del técnico"
+            />
+          </div>
+
+          <button type="submit" className={styles.button}>
+            Crear Técnico
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,75 +1,113 @@
 import React, { useState } from "react";
-import styles from "./CrearCliente.module.css";
+import { useNavigate } from "react-router-dom";
 
 import { fetchFromApi } from "../../../services/fetch";
+import styles from "../../common.module.css";
 
 const CrearCliente = () => {
-  const [nombre, setNombre] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [contacto, setContacto] = useState("");
-  const [correo, setCorreo] = useState("");
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    nombre: "",
+    direccion: "",
+    contacto: "",
+    correo: "",
+  });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleSubmit = (event) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const cliente = {
-      nombre,
-      direccion,
-      contacto,
-      correo,
-    };
-
-    fetchFromApi("/clientes/", {
-      method: "POST",
-      body: JSON.stringify(cliente),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Cliente creado:", data);
-        alert("Cliente creado con éxito");
-        // Reset form
-        setNombre("");
-        setDireccion("");
-        setContacto("");
-        setCorreo("");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Error al crear cliente");
+    try {
+      const response = await fetchFromApi("/clientes/", {
+        method: "POST",
+        body: JSON.stringify(formData),
       });
+      const data = await response.json();
+      
+      setMessage({ type: "success", text: "Cliente creado con éxito" });
+      setTimeout(() => {
+        navigate("/cliente/listar");
+      }, 2000);
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ type: "error", text: "Error al crear cliente" });
+    }
   };
 
   return (
-    <div className={styles.crearClienteContainer}>
-      <form onSubmit={handleSubmit} className={styles.crearClienteForm}>
-        <h2>Crear Nuevo Cliente</h2>
-        <input
-          type='text'
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          placeholder='Nombre'
-          required
-        />
-        <input
-          type='text'
-          value={direccion}
-          onChange={(e) => setDireccion(e.target.value)}
-          placeholder='Dirección'
-          required
-        />
-        <input
-          type='text'
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-          placeholder='Contacto'
-        />
-        <input
-          type='email'
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-          placeholder='Correo Electrónico'
-        />
-        <button type='submit'>Crear Cliente</button>
-      </form>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Crear Nuevo Cliente</h1>
+      
+      <div className={styles.card}>
+        {message.text && (
+          <div className={`${styles.message} ${styles[message.type]}`}>
+            {message.text}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="nombre" className={styles.label}>Nombre</label>
+            <input
+              id="nombre"
+              name="nombre"
+              type="text"
+              value={formData.nombre}
+              onChange={handleChange}
+              className={styles.input}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="direccion" className={styles.label}>Dirección</label>
+            <input
+              id="direccion"
+              name="direccion"
+              type="text"
+              value={formData.direccion}
+              onChange={handleChange}
+              className={styles.input}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="contacto" className={styles.label}>Contacto</label>
+            <input
+              id="contacto"
+              name="contacto"
+              type="text"
+              value={formData.contacto}
+              onChange={handleChange}
+              className={styles.input}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="correo" className={styles.label}>Correo Electrónico</label>
+            <input
+              id="correo"
+              name="correo"
+              type="email"
+              value={formData.correo}
+              onChange={handleChange}
+              className={styles.input}
+            />
+          </div>
+
+          <button type="submit" className={styles.button}>
+            Crear Cliente
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import styles from "./Login.module.css";
+import { fetchFromApi } from '../../services/fetch';
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
@@ -9,6 +10,38 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const checkAuth = async () => {
+      try {
+        const response = await fetchFromApi("/login/verificar-sesion");
+
+        if (!response.ok) {
+          throw new Error(data.mensaje || "Error al verificar sesión");
+        }
+
+        const data = await response.json();
+
+        console.log("data", data);
+
+        setIsAuthenticated(data.autenticado);
+        setIsAdmin(data.es_administrador);
+      } catch (error) {
+        console.log("error", error);
+
+        console.error("Error verificando autenticación:", error);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,8 +61,6 @@ const Login = () => {
         credentials: "include", // Importante para las cookies de sesión
         body: JSON.stringify(credentials),
       });
-
-      console.log(response);
 
       const data = await response.json();
 
@@ -55,6 +86,14 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  if (isAuthenticated && isAdmin) {
+    return <Navigate to='/inicioAdm' replace />;
+  }
+  
+  if (isAuthenticated && !isAdmin) {
+    return <Navigate to='/iniciousuario' replace />;
+  }
 
   return (
     <div className={styles.loginContainer}>

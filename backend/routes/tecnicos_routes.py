@@ -87,3 +87,29 @@ def eliminar_tecnico():
         return jsonify({"error": "tecnico no encontrado"}), 404
 
     return jsonify({"mensaje": "tecnico eliminado"}), 200
+
+
+@tecnicos_bp.route('/', methods=['GET'])
+def tecnicos_ordenados_por_mantenimientos():
+    conn = get_connection()
+    #cada fila que devuelve la consulta venga como un diccionario, no como una tupla.
+    # Devuelve el resultado en formato JSON legible.
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT 
+            t.ci,
+            t.nombre,
+            t.apellido,
+            COUNT(m.id) AS cantidad_mantenimientos
+        FROM tecnicos t
+        LEFT JOIN mantenimientos m ON t.ci = m.ci_tecnico
+        GROUP BY t.ci, t.nombre, t.apellido
+        ORDER BY cantidad_mantenimientos DESC
+    """)
+
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(resultado), 200

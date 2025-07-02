@@ -81,7 +81,7 @@ def eliminar_insumo():
     return jsonify({"mensaje": "insumo eliminado"}), 200
 
 #Insumos ordenados por mayor consumo total (en unidades) y su costo total (precio × cantidad usada).
-@insumos_bp.route('/', methods=['GET'])
+@insumos_bp.route('/consumo', methods=['GET'])
 def insumos_mas_consumidos():
     #No pide ningún filtro asi que no se llaman parametros
     conn = get_connection()

@@ -83,7 +83,9 @@ def eliminar_cliente():
 
     return jsonify({"mensaje": "Cliente eliminado"}), 200
 
-@clientes_bp.route('/', methods=['GET'])
+# Total mensual a cobrar a cada cliente (suma de alquiler de máquinas más
+#costo de insumos consumidos
+@clientes_bp.route('/total_mensual', methods=['GET'])
 def total_mensual_cliente():
     mes = request.args.get('mes')     # se ponen en la url por ejemplo: 
     anio = request.args.get('anio')   # GET http://localhost:5001/clientes/total-mensual?mes=6&anio=2025
@@ -137,7 +139,7 @@ def total_mensual_cliente():
     return jsonify(resultado), 200
 
 #Clientes ordenados por cant de maquinas
-@clientes_bp.route('/', methods=['GET'])
+@clientes_bp.route('/cant_maquina', methods=['GET'])
 def clientes_ordenados_por_maquinas():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)

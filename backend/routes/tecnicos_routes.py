@@ -89,7 +89,7 @@ def eliminar_tecnico():
     return jsonify({"mensaje": "tecnico eliminado"}), 200
 
 
-@tecnicos_bp.route('/', methods=['GET'])
+@tecnicos_bp.route('/mantenimiento', methods=['GET'])
 def tecnicos_ordenados_por_mantenimientos():
     conn = get_connection()
     #cada fila que devuelve la consulta venga como un diccionario, no como una tupla.

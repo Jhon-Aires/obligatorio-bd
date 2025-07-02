@@ -89,3 +89,29 @@ def eliminar_insumo():
         return jsonify({"error": "insumo no encontrado"}), 404
 
     return jsonify({"mensaje": "insumo eliminado"}), 200
+
+#Insumos ordenados por mayor consumo total (en unidades) y su costo total (precio × cantidad usada).
+@insumos_bp.route('/consumo', methods=['GET'])
+def insumos_mas_consumidos():
+    #No pide ningún filtro asi que no se llaman parametros
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute("""
+        SELECT 
+            i.id,
+            i.descripcion,
+            SUM(rc.cantidad_usada) AS total_consumido,
+            i.precio_unitario,
+            SUM(rc.cantidad_usada * i.precio_unitario) AS costo_total
+        FROM insumos i
+        JOIN registro_consumo rc ON i.id = rc.id_insumo
+        GROUP BY i.id, i.descripcion, i.precio_unitario
+        ORDER BY total_consumido DESC
+    """)
+    
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return jsonify(resultado), 200

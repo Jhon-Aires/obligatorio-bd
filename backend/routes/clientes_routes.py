@@ -98,13 +98,16 @@ def total_mensual_cliente():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
+
+#SUM(DISTINCT m.costo_alquiler_mensual) puede hacer que si una máquina aparece más de una vez en la combinación, 
+# su costo solo se cuente una vez.
     query = """
         SELECT 
             c.id AS id_cliente,
             c.nombre AS cliente,
             MONTH(rc.fecha) AS mes,
             YEAR(rc.fecha) AS anio,
-            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) AS total_alquiler,
+            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) AS total_alquiler, 
             IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_insumos,
             IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) + 
             IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_mensual

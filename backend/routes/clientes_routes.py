@@ -64,7 +64,7 @@ def editar_cliente():
     return jsonify({"mensaje": "Cliente modificado"}), 204
 
 
-#Se permite borrar solo por ID, falta borrado en cascada en la base y en el backend
+#Se permite borrar solo por ID
 @clientes_bp.route('/', methods=['DELETE'])
 def eliminar_cliente():
     datos = request.json
@@ -73,14 +73,7 @@ def eliminar_cliente():
 
     conn = get_connection() 
     cursor = conn.cursor()
-        # Consultar si tiene máquinas en uso
-    cursor.execute(
-        "SELECT COUNT(*) FROM maquinas_en_uso WHERE id_cliente = %s",(datos['id'],))
-    cantidad_maquinas = cursor.fetchone()[0]
-    
-    if cantidad_maquinas > 0:
-        return (jsonify({"error": f"El cliente tiene {cantidad_maquinas} máquina(s) en uso. Elimine dichas máquinas."}),409)
-        #Elimina cliente si no tiene máquinas en uso
+        #Se elimina cliente y sus máquinas en uso porque se borran en cascada
     cursor.execute(
         "DELETE FROM clientes WHERE id = %s",(datos['id'],))
     conn.commit()
@@ -137,6 +130,30 @@ def total_mensual_cliente():
     """
 
     cursor.execute(query, valores)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(resultado), 200
+
+#Clientes ordenados por cant de maquinas
+@clientes_bp.route('/', methods=['GET'])
+def clientes_ordenados_por_maquinas():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+# las maquinas asociadas a cliente son las máquinas registradas en la tabla maquinas_en_uso
+    cursor.execute("""
+        SELECT 
+            c.id,
+            c.nombre,
+            c.direccion,
+            COUNT(me.id) AS cantidad_maquinas
+        FROM clientes c
+        LEFT JOIN maquinas_en_uso me ON me.id_cliente = c.id
+        GROUP BY c.id, c.nombre, c.direccion
+        ORDER BY cantidad_maquinas DESC;
+    """)
+
     resultado = cursor.fetchall()
     cursor.close()
     conn.close()

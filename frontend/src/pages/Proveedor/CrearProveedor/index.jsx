@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { fetchFromApi } from "../../../services/fetch";
 import classes from "./CrearProveedor.module.css";
 
 const inputs = [
@@ -47,29 +48,21 @@ function CrearProveedor() {
     }
 
     try {
-
       const proveedorACrear = {
         ...nuevoProveedor,
-        contacto: Number(nuevoProveedor.contacto)
+        contacto: Number(nuevoProveedor.contacto),
       };
-      fetch("http://localhost:5001/proveedores", {
+      fetchFromApi("/proveedores", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(proveedorACrear),
-      }).then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            console.log("Proveedor creado:", data);
-            alert("Proveedor creado con éxito");
-            setNuevoProveedor(getNuevoProveedorDefault());
-            setError(getNuevoProveedorDefault(null));
-          });
-        } else {
-          alert("Error al crear el proveedor");
-        }
-      });
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Proveedor creado:", data);
+          alert("Proveedor creado con éxito");
+          setNuevoProveedor(getNuevoProveedorDefault());
+          setError(getNuevoProveedorDefault(null));
+        });
     } catch (error) {
       console.error("Error:", error);
       alert("Error al crear el proveedor");
@@ -110,7 +103,7 @@ function CrearProveedor() {
             )}
           </label>
         ))}
-        <button type="submit">Crear Proveedor</button>
+        <button type='submit'>Crear Proveedor</button>
       </form>
     </div>
   );

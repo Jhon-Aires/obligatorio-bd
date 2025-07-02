@@ -111,3 +111,19 @@ INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_
     ('rc-001', 1, 1, '2025-05-10', 5),
     ('rc-002', 2, 2, '2025-05-11', 2),
     ('rc-003', 1, 3, '2025-05-12', 10);
+
+-- Crear los usuarios de MySQL
+CREATE USER 'admin_user'@'%' IDENTIFIED BY 'adminpass';
+CREATE USER 'limited_user'@'%' IDENTIFIED BY 'userpass';
+
+-- Dar acceso total sobre las tablas de marloy
+GRANT ALL PRIVILEGES ON marloy.* TO 'admin_user'@'%';
+
+-- Dar acceso limitado al otro usuario
+GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.insumos TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.clientes TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.mantenimientos TO 'limited_user'@'%';
+
+-- Aplicar cambios
+FLUSH PRIVILEGES;
+

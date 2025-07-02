@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Inicioadm from './pages/InicioAdm';
+import InicioUsuario from './pages/InicioUsuario';
 import Login from "./pages/Login";
 import CrearProveedor from './pages/Proveedor/CrearProveedor';
 import ListarProveedores from './pages/Proveedor/ListarProveedores';
@@ -22,26 +24,36 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public route */}
         <Route path="/login" element={<Login />} />
-        <Route path="/inicioadm" element={<Inicioadm />} />
-        <Route path="/proveedor/alta" element={<CrearProveedor />} />
-        <Route path="/proveedor/listar" element={<ListarProveedores />} />
-        <Route path="/insumo/alta" element={<CrearInsumo />} />
-        <Route path="/insumo/listar" element={<ListarInsumos />} />
-        <Route path="/cliente/alta" element={<CrearCliente />} />
-        <Route path="/cliente/listar" element={<ListarClientes />} />
-        <Route path="/maquina/alta" element={<CrearMaquina />} />
-        <Route path="/maquina/listar" element={<ListarMaquinas />} />
-        <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
-        <Route path="/maquinaenuso/listar" element={<ListarMaquinasEnUso />} />
-        <Route path="/tecnico/alta" element={<CrearTecnico />} />
-        <Route path="/tecnico/listar" element={<ListarTecnicos />} />
-        <Route path="/mantenimiento/alta" element={<CrearMantenimiento />} />
-        <Route path="/mantenimiento/listar" element={<ListarMantenimientos />} />
-        <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
-        <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
-        {/* <Route path="/proveedor/baja" element={<BorrarProveedor />} /> */}
-        {/* <Route path="/proveedor/modificacion" element={<EditarProveedor />} /> */}
+
+        {/* Admin-only routes */}
+        <Route element={<ProtectedRoute requireAdmin={true} />}>
+          <Route path="/inicioadm" element={<Inicioadm />} />
+          <Route path="/proveedor/alta" element={<CrearProveedor />} />
+          <Route path="/maquina/alta" element={<CrearMaquina />} />
+          <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
+          <Route path="/maquinaenuso/listar" element={<ListarMaquinasEnUso />} />
+          <Route path="/tecnico/alta" element={<CrearTecnico />} />
+          <Route path="/tecnico/listar" element={<ListarTecnicos />} />
+          <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
+          <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
+        </Route>
+
+        {/* Routes accessible to all authenticated users */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/iniciousuario" element={<InicioUsuario />} />
+          <Route path="/cliente/alta" element={<CrearCliente />} />
+          <Route path="/cliente/listar" element={<ListarClientes />} />
+          <Route path="/insumo/alta" element={<CrearInsumo />} />
+          <Route path="/insumo/listar" element={<ListarInsumos />} />
+          <Route path="/mantenimiento/alta" element={<CrearMantenimiento />} />
+          <Route path="/mantenimiento/listar" element={<ListarMantenimientos />} />
+          <Route path="/maquina/listar" element={<ListarMaquinas />} />
+          <Route path="/proveedor/listar" element={<ListarProveedores />} />
+        </Route>
+
+        {/* Default route */}
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

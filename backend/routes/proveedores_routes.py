@@ -1,37 +1,47 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
+from auth_utils import login_required, admin_required
 
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
 @proveedores_bp.route('/', methods=['GET'])
+@login_required
 def listar_proveedores():
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM proveedores")
-    resultado = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(resultado)
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM proveedores")
+        resultado = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(resultado), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al listar proveedores: {str(e)}"}), 500
 
 @proveedores_bp.route('/', methods=['POST'])
+@admin_required  # Solo administradores pueden crear proveedores
 def crear_proveedor():
     datos = request.json
-    conn = get_connection()
-    cursor = conn.cursor()
+    
+    # Validar campos requeridos
+    if not datos or not all(k in datos for k in ('nombre', 'apellido', 'contacto')):
+        return jsonify({"error": "Faltan campos requeridos: nombre, apellido, contacto"}), 400
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO proveedores (nombre, apellido, contacto) VALUES (%s, %s, %s)",
+            (datos['nombre'], datos['apellido'], datos['contacto'])
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"mensaje": "Proveedor creado exitosamente"}), 201
+    except Exception as e:
+        print(f"[ERROR] {str(e)}")  # Agregá esta línea
+        return jsonify({"error": f"Error al crear proveedor: {str(e)}"}), 500
 
-    print(datos)  # Debugging line to check the received data
-    
-    if not datos or 'nombre' not in datos or 'apellido' not in datos or 'contacto' not in datos:
-        return jsonify({"error": "Datos incompletos"}), 400
-    
-    cursor.execute(
-        "INSERT INTO proveedores (nombre, apellido, contacto) VALUES (%s, %s, %s)",
-        (datos['nombre'], datos['apellido'], datos['contacto'])
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensaje": "Proveedor creado"}), 201
 
 @proveedores_bp.route('/', methods=['PATCH'])
 def editar_proveedor():

@@ -6,6 +6,7 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 1rem;
+    color: black;
 }
 
 .loginForm {
@@ -37,6 +38,7 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.9);
+    color: black;
 }
 
 .loginForm input:focus {

@@ -19,6 +19,7 @@ const CrearCliente = () => {
         fetch('http://localhost:5001/clientes/', {
             method: 'POST',
             body: JSON.stringify(cliente),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

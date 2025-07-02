@@ -19,6 +19,7 @@ const CrearTecnico = () => {
         fetch('http://localhost:5001/tecnicos/', {
             method: 'POST',
             body: JSON.stringify(tecnico),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

@@ -5,7 +5,9 @@ const ListarProveedores = () => {
     const [proveedores, setProveedores] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/proveedores/')
+        fetch('http://localhost:5001/proveedores/', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => setProveedores(data))
             .catch(error => console.error('Error fetching proveedores:', error));

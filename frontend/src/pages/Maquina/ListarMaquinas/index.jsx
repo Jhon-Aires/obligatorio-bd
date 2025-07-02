@@ -5,7 +5,7 @@ const ListarMaquinas = () => {
     const [maquinas, setMaquinas] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/maquinas/')
+        fetch('http://localhost:5001/maquinas/', {credentials: "include"})
             .then(response => response.json())
             .then(data => setMaquinas(data))
             .catch(error => console.error('Error fetching maquinas:', error));

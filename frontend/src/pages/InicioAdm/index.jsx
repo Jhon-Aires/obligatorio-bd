@@ -2,50 +2,66 @@ import classes from './inicioadm.module.css'
 import { Link } from 'react-router-dom'
 
 export default function InicioAdm() {
+    const handleLogout = () => {
+        fetch('http://localhost:5001/login/logout', {
+            method: 'POST',
+            credentials: 'include'
+        })
+        .then(() => {
+            window.location.href = '/login';
+        })
+        .catch((error) => {
+            console.error('Error al cerrar sesión:', error);
+        });
+    };
+
     return (
         <div className={classes.pageContainer}>
             <nav className={classes.navbar}>
-                <h1 className={classes.navbarTitle}>Cafés Marloy</h1>
+                <h1 className={classes.navbarTitle}>Panel Administrador - Coffe's Marloy</h1>
+                <button onClick={handleLogout} className={classes.logoutBtn}>
+                    Cerrar Sesión
+                </button>
                 <div className={classes.navbarButtons}>
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Proveedores</h2>
+                        <h2 className={classes.sectionTitle}>👥 Usuarios</h2>
+                        <Link to="/usuario/crear" className={classes.navbarButton}>Crear Usuario</Link>
+                        <Link to="/usuario/listar" className={classes.navbarButton}>Gestionar Usuarios</Link>
+                    </div>
+
+                    <div className={classes.navSection}>
+                        <h2 className={classes.sectionTitle}>🏪 Proveedores</h2>
                         <Link to="/proveedor/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/proveedor/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/proveedor/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Insumos</h2>
+                        <h2 className={classes.sectionTitle}>📦 Insumos</h2>
                         <Link to="/insumo/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/insumo/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/insumo/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Clientes</h2>
+                        <h2 className={classes.sectionTitle}>👤 Clientes</h2>
                         <Link to="/cliente/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/cliente/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/cliente/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Máquinas</h2>
+                        <h2 className={classes.sectionTitle}>🏗️ Máquinas</h2>
                         <Link to="/maquina/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/maquina/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/maquina/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Técnicos</h2>
+                        <h2 className={classes.sectionTitle}>🔧 Técnicos</h2>
                         <Link to="/tecnico/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/tecnico/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/tecnico/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 
                     <div className={classes.navSection}>
-                        <h2 className={classes.sectionTitle}>Mantenimientos</h2>
+                        <h2 className={classes.sectionTitle}>⚙️ Mantenimientos</h2>
                         <Link to="/mantenimiento/alta" className={classes.navbarButton}>Crear</Link>
-                        <Link to="/mantenimiento/baja" className={classes.navbarButton}>Borrar</Link>
                         <Link to="/mantenimiento/listar" className={classes.navbarButton}>Listar</Link>
                     </div>
 

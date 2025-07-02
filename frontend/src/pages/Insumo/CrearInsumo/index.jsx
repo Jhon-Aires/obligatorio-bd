@@ -19,6 +19,7 @@ const CrearInsumo = () => {
         fetch('http://localhost:5001/insumos/', {
             method: 'POST',
             body: JSON.stringify(insumo),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

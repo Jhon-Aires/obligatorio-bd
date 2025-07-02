@@ -58,6 +58,7 @@ function CrearProveedor() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(proveedorACrear),
+        credentials: "include", // Asegura que las cookies de sesión se envíen
       }).then((res) => {
         if (res.ok) {
           res.json().then((data) => {

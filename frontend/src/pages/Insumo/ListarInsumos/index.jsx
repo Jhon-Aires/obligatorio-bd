@@ -5,7 +5,7 @@ const ListarInsumos = () => {
     const [insumos, setInsumos] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/insumos/')
+        fetch('http://localhost:5001/insumos/', {credentials: "include"})
             .then(response => response.json())
             .then(data => setInsumos(data))
             .catch(error => console.error('Error fetching insumos:', error));

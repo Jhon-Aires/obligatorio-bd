@@ -39,7 +39,9 @@ def crear_proveedor():
         conn.close()
         return jsonify({"mensaje": "Proveedor creado exitosamente"}), 201
     except Exception as e:
+        print(f"[ERROR] {str(e)}")  # Agregá esta línea
         return jsonify({"error": f"Error al crear proveedor: {str(e)}"}), 500
+
 
 @proveedores_bp.route('/', methods=['PATCH'])
 def editar_proveedor():

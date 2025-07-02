@@ -5,7 +5,9 @@ const ListarTecnicos = () => {
     const [tecnicos, setTecnicos] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/tecnicos/')
+        fetch('http://localhost:5001/tecnicos/', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => setTecnicos(data))
             .catch(error => console.error('Error fetching tecnicos:', error));

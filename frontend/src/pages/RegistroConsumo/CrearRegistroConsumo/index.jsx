@@ -21,6 +21,7 @@ const CrearRegistroConsumo = () => {
         fetch('http://localhost:5001/registro_consumo/', {
             method: 'POST',
             body: JSON.stringify(registro),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

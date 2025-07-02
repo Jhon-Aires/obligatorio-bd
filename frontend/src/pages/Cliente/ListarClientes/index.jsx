@@ -5,7 +5,7 @@ const ListarClientes = () => {
     const [clientes, setClientes] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/clientes/')
+        fetch('http://localhost:5001/clientes/',{credentials: "include"})
             .then(response => response.json())
             .then(data => setClientes(data))
             .catch(error => console.error('Error fetching clientes:', error));

@@ -15,6 +15,7 @@ const CrearMaquina = () => {
         fetch('http://localhost:5001/maquinas/', {
             method: 'POST',
             body: JSON.stringify(maquina),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

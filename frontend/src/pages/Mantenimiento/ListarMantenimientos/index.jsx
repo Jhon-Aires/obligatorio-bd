@@ -5,7 +5,7 @@ const ListarMantenimientos = () => {
     const [mantenimientos, setMantenimientos] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/mantenimientos/')
+        fetch('http://localhost:5001/mantenimientos/', {credentials: "include"})
             .then(response => response.json())
             .then(data => setMantenimientos(data))
             .catch(error => console.error('Error fetching mantenimientos:', error));

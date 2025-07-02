@@ -5,7 +5,9 @@ const ListarRegistroConsumo = () => {
     const [registros, setRegistros] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5001/registro_consumo/')
+        fetch('http://localhost:5001/registro_consumo/', {
+            credentials: "include"
+        })
             .then(response => response.json())
             .then(data => setRegistros(data))
             .catch(error => console.error('Error fetching registro_consumo:', error));

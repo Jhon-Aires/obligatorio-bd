@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Inicioadm from './pages/InicioAdm';
+import InicioUsuario from './pages/InicioUsuario';
 import Login from "./pages/Login";
 import CrearProveedor from './pages/Proveedor/CrearProveedor';
 import ListarProveedores from './pages/Proveedor/ListarProveedores';
@@ -24,6 +25,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/inicioadm" element={<Inicioadm />} />
+        <Route path="/iniciousuario" element={<InicioUsuario />} />
         <Route path="/proveedor/alta" element={<CrearProveedor />} />
         <Route path="/proveedor/listar" element={<ListarProveedores />} />
         <Route path="/insumo/alta" element={<CrearInsumo />} />
@@ -40,8 +42,7 @@ export default function App() {
         <Route path="/mantenimiento/listar" element={<ListarMantenimientos />} />
         <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
         <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
-        {/* <Route path="/proveedor/baja" element={<BorrarProveedor />} /> */}
-        {/* <Route path="/proveedor/modificacion" element={<EditarProveedor />} /> */}
+        {/* Ruta por defecto redirige al login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

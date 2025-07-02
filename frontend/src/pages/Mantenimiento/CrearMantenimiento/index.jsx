@@ -21,6 +21,7 @@ const CrearMantenimiento = () => {
         fetch('http://localhost:5001/mantenimientos/', {
             method: 'POST',
             body: JSON.stringify(mantenimiento),
+            credentials: "include"
         })
         .then(response => response.json())
         .then(data => {

@@ -92,30 +92,50 @@ def eliminar_cliente():
 
 @clientes_bp.route('/', methods=['GET'])
 def total_mensual_cliente():
-    datos = request.json
-    conn = get_connection()
-    cursor = conn.cursor()
-    if 'id' not in datos:
-        return jsonify({"error": "Falta el parametro id"}), 400
-    
-    campos_actualizados = []
-    values = []
+    mes = request.args.get('mes')     # se ponen en la url por ejemplo: 
+    anio = request.args.get('anio')   # GET http://localhost:5001/clientes/total-mensual?mes=6&anio=2025
 
-    campos_permitidos = ['id_cliente', 'fecha', 'precio_unitario', 'cantidad_usada','modelo','id_maquina_en_uso','id_insumo','nombre_cliente']
-    for campo in campos_permitidos:
-        if campo in datos:
-            campos_actualizados.append(f"{campo} = %s")
-            values.append(datos[campo])
-        #Construir la query con los datos pasados por el json
-    cursor.execute("""SELECT c.id AS id_cliente, c.nombre AS cliente, MONTH(rc.fecha) AS mes, YEAR(rc.fecha) AS anio,
-    " IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) AS total_alquiler, 
-                    IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_insumos, 
-                    IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) + IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_mensual
-                    FROM clientes c
-                    LEFT JOIN maquinas_en_uso me ON me.id_cliente = c.id
-                    LEFT JOIN maquinas m ON m.modelo = me.modelo
-                    LEFT JOIN registro_consumo rc ON rc.id_maquina_en_uso = me.id
-                    LEFT JOIN insumos i ON i.id = rc.id_insumo
-                    GROUP BY c.id, c.nombre, MONTH(rc.fecha), YEAR(rc.fecha)
-                    ORDER BY anio DESC, mes DESC, cliente""", (datos['id_cliente'], datos['fecha'], datos['precio_unitario'], datos['cantidad_usada'],datos['modelo'],datos['id_maquina_en_uso'],datos['id_insumo'],datos['nombre_cliente'])
-     ), 200 
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT 
+            c.id AS id_cliente,
+            c.nombre AS cliente,
+            MONTH(rc.fecha) AS mes,
+            YEAR(rc.fecha) AS anio,
+            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) AS total_alquiler,
+            IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_insumos,
+            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) + 
+            IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_mensual
+        FROM clientes c
+        LEFT JOIN maquinas_en_uso me ON me.id_cliente = c.id
+        LEFT JOIN maquinas m ON m.modelo = me.modelo
+        LEFT JOIN registro_consumo rc ON rc.id_maquina_en_uso = me.id
+        LEFT JOIN insumos i ON i.id = rc.id_insumo
+    """
+
+    filtros = []
+    valores = []
+
+    if mes:
+        filtros.append("MONTH(rc.fecha) = %s")
+        valores.append(mes)
+    if anio:
+        filtros.append("YEAR(rc.fecha) = %s")
+        valores.append(anio)
+
+    if filtros:
+        query += " WHERE " + " AND ".join(filtros)
+
+    query += """
+        GROUP BY c.id, c.nombre, MONTH(rc.fecha), YEAR(rc.fecha)
+        ORDER BY anio DESC, mes DESC, cliente;
+    """
+
+    cursor.execute(query, valores)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(resultado), 200

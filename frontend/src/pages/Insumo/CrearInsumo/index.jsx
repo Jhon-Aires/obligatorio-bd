@@ -18,22 +18,35 @@ const CrearInsumo = () => {
 
         fetch('http://localhost:5001/insumos/', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(insumo),
             credentials: "include"
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Insumo creado:', data);
-            alert('Insumo creado con éxito');
-            // Reset form
-            setDescripcion('');
-            setTipo('');
-            setPrecioUnitario('');
-            setIdProveedor('');
+            if (data.error) {
+                alert(`Error: ${data.error} - ${data.mensaje}`);
+            } else {
+                alert('Insumo creado con éxito');
+                // Reset form
+                setDescripcion('');
+                setTipo('');
+                setPrecioUnitario('');
+                setIdProveedor('');
+            }
         })
         .catch((error) => {
-            console.error('Error:', error);
-            alert('Error al crear insumo');
+            console.error('Error completo:', error);
+            alert(`Error al crear insumo: ${error.message}`);
         });
     };
 

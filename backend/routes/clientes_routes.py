@@ -64,7 +64,7 @@ def editar_cliente():
     return jsonify({"mensaje": "Cliente modificado"}), 204
 
 
-#Se permite borrar solo por ID, falta borrado en cascada en la base y en el backend
+#Se permite borrar solo por ID
 @clientes_bp.route('/', methods=['DELETE'])
 def eliminar_cliente():
     datos = request.json
@@ -73,14 +73,7 @@ def eliminar_cliente():
 
     conn = get_connection() 
     cursor = conn.cursor()
-        # Consultar si tiene máquinas en uso
-    cursor.execute(
-        "SELECT COUNT(*) FROM maquinas_en_uso WHERE id_cliente = %s",(datos['id'],))
-    cantidad_maquinas = cursor.fetchone()[0]
-    
-    if cantidad_maquinas > 0:
-        return (jsonify({"error": f"El cliente tiene {cantidad_maquinas} máquina(s) en uso. Elimine dichas máquinas."}),409)
-        #Elimina cliente si no tiene máquinas en uso
+        #Se elimina cliente y sus máquinas en uso porque se borran en cascada
     cursor.execute(
         "DELETE FROM clientes WHERE id = %s",(datos['id'],))
     conn.commit()
@@ -89,3 +82,82 @@ def eliminar_cliente():
         return jsonify({"error": "Cliente no encontrado"}), 404
 
     return jsonify({"mensaje": "Cliente eliminado"}), 200
+
+# Total mensual a cobrar a cada cliente (suma de alquiler de máquinas más
+#costo de insumos consumidos
+@clientes_bp.route('/total_mensual', methods=['GET'])
+def total_mensual_cliente():
+    mes = request.args.get('mes')     # se ponen en la url por ejemplo: 
+    anio = request.args.get('anio')   # GET http://localhost:5001/clientes/total-mensual?mes=6&anio=2025
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+
+#SUM(DISTINCT m.costo_alquiler_mensual) puede hacer que si una máquina aparece más de una vez en la combinación, 
+# su costo solo se cuente una vez.
+    query = """
+        SELECT 
+            c.id AS id_cliente,
+            c.nombre AS cliente,
+            MONTH(rc.fecha) AS mes,
+            YEAR(rc.fecha) AS anio,
+            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) AS total_alquiler, 
+            IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_insumos,
+            IFNULL(SUM(DISTINCT m.costo_alquiler_mensual), 0) + 
+            IFNULL(SUM(i.precio_unitario * rc.cantidad_usada), 0) AS total_mensual
+        FROM clientes c
+        LEFT JOIN maquinas_en_uso me ON me.id_cliente = c.id
+        LEFT JOIN maquinas m ON m.modelo = me.modelo
+        LEFT JOIN registro_consumo rc ON rc.id_maquina_en_uso = me.id
+        LEFT JOIN insumos i ON i.id = rc.id_insumo
+    """
+
+    filtros = []
+    valores = []
+
+    if mes:
+        filtros.append("MONTH(rc.fecha) = %s")
+        valores.append(mes)
+    if anio:
+        filtros.append("YEAR(rc.fecha) = %s")
+        valores.append(anio)
+
+    if filtros:
+        query += " WHERE " + " AND ".join(filtros)
+
+    query += """
+        GROUP BY c.id, c.nombre, MONTH(rc.fecha), YEAR(rc.fecha)
+        ORDER BY anio DESC, mes DESC, cliente;
+    """
+
+    cursor.execute(query, valores)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(resultado), 200
+
+#Clientes ordenados por cant de maquinas
+@clientes_bp.route('/cant_maquina', methods=['GET'])
+def clientes_ordenados_por_maquinas():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+# las maquinas asociadas a cliente son las máquinas registradas en la tabla maquinas_en_uso
+    cursor.execute("""
+        SELECT 
+            c.id,
+            c.nombre,
+            c.direccion,
+            COUNT(me.id) AS cantidad_maquinas
+        FROM clientes c
+        LEFT JOIN maquinas_en_uso me ON me.id_cliente = c.id
+        GROUP BY c.id, c.nombre, c.direccion
+        ORDER BY cantidad_maquinas DESC;
+    """)
+
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(resultado), 200

@@ -35,20 +35,20 @@ const InicioAdm = () => {
         <div className={styles.sectionsGrid}>
           {/* Usuarios */}
           <section className={styles.section}>
-            <h3>👥 Gestión de Usuarios</h3>
+            <h3>👥 Usuarios</h3>
             <div className={styles.buttonGroup}>
               <Link to='/usuario/crear' className={styles.actionBtn}>
                 Crear Usuario
               </Link>
               <Link to='/usuario/listar' className={styles.actionBtn}>
-                Gestionar Usuarios
+                Listar Usuarios
               </Link>
             </div>
           </section>
 
           {/* Proveedores */}
           <section className={styles.section}>
-            <h3>🏪 Gestión de Proveedores</h3>
+            <h3>🏪 Proveedores</h3>
             <div className={styles.buttonGroup}>
               <Link to='/proveedor/alta' className={styles.actionBtn}>
                 Crear Proveedor
@@ -61,7 +61,7 @@ const InicioAdm = () => {
 
           {/* Insumos */}
           <section className={styles.section}>
-            <h3>📦 Gestión de Insumos</h3>
+            <h3>📦 Insumos</h3>
             <div className={styles.buttonGroup}>
               <Link to='/insumo/alta' className={styles.actionBtn}>
                 Crear Insumo
@@ -74,7 +74,7 @@ const InicioAdm = () => {
 
           {/* Clientes */}
           <section className={styles.section}>
-            <h3>👤 Gestión de Clientes</h3>
+            <h3>👤 Clientes</h3>
             <div className={styles.buttonGroup}>
               <Link to='/cliente/alta' className={styles.actionBtn}>
                 Crear Cliente
@@ -87,7 +87,7 @@ const InicioAdm = () => {
 
           {/* Máquinas */}
           <section className={styles.section}>
-            <h3>🏗️ Gestión de Máquinas</h3>
+            <h3>🏗️ Máquinas</h3>
             <div className={styles.buttonGroup}>
               <Link to='/maquina/alta' className={styles.actionBtn}>
                 Crear Máquina
@@ -100,7 +100,7 @@ const InicioAdm = () => {
 
           {/* Técnicos */}
           <section className={styles.section}>
-            <h3>🔧 Gestión de Técnicos</h3>
+            <h3>🔧 Técnicos</h3>
             <div className={styles.buttonGroup}>
               <Link to='/tecnico/alta' className={styles.actionBtn}>
                 Crear Técnico
@@ -113,7 +113,7 @@ const InicioAdm = () => {
 
           {/* Mantenimientos */}
           <section className={styles.section}>
-            <h3>⚙️ Gestión de Mantenimientos</h3>
+            <h3>⚙️ Mantenimientos</h3>
             <div className={styles.buttonGroup}>
               <Link to='/mantenimiento/alta' className={styles.actionBtn}>
                 Crear Mantenimiento

@@ -19,6 +19,8 @@ import CrearMantenimiento from './pages/Mantenimiento/CrearMantenimiento';
 import ListarMantenimientos from './pages/Mantenimiento/ListarMantenimientos';
 import CrearRegistroConsumo from './pages/RegistroConsumo/CrearRegistroConsumo';
 import ListarRegistroConsumo from './pages/RegistroConsumo/ListarRegistroConsumo';
+import CrearUsuario from './pages/Usuario/CrearUsuario';
+import ListarUsuarios from './pages/Usuario/ListarUsuarios';
 
 export default function App() {
   return (
@@ -30,6 +32,8 @@ export default function App() {
         {/* Admin-only routes */}
         <Route element={<ProtectedRoute requireAdmin={true} />}>
           <Route path="/inicioadm" element={<Inicioadm />} />
+          <Route path="/usuario/crear" element={<CrearUsuario />} />
+          <Route path="/usuario/listar" element={<ListarUsuarios />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />

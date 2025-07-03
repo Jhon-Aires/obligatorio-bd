@@ -23,60 +23,48 @@ def listar_insumos():
 @login_required
 def crear_insumo():
     datos = request.json
-
-    campos_requeridos = ['descripcion', 'tipo', 'precio_unitario', 'id_proveedor']
-    errores = []
-
-    # Expresiones para validar texto
-    texto_valido = re.compile(r"^[\w\sáéíóúÁÉÍÓÚñÑ\-,\.]+$")
+    campos = ['descripcion', 'tipo', 'precio_unitario', 'id_proveedor']
 
     if not datos:
-        return jsonify({"error": "No se recibió un JSON válido"}), 400
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
 
-    # Validar campos y construir errores
-    for campo in campos_requeridos:
-        valor = datos.get(campo)
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
 
-        if valor is None or (isinstance(valor, str) and valor.strip() == ""):
-            errores.append(f"El campo '{campo}' no puede estar vacío")
-            continue
+        valor = datos[campo]
 
         if campo in ['descripcion', 'tipo']:
-            if not texto_valido.match(str(valor)):
-                errores.append(f"El campo '{campo}' contiene caracteres inválidos")
+            if not isinstance(valor, str) or valor.strip() == "":
+                return jsonify({"error": f"El campo '{campo}' debe ser texto no vacío"}), 400
 
         elif campo == 'precio_unitario':
             try:
-                precio = float(valor)
-                if precio <= 0:
-                    errores.append("El campo 'precio_unitario' debe ser un número positivo")
-            except (ValueError, TypeError):
-                errores.append("El campo 'precio_unitario' debe ser un número válido")
+                if float(valor) < 0:
+                    return jsonify({"error": "El precio debe ser un número positivo"}), 400
+            except:
+                return jsonify({"error": "El precio debe ser un número válido"}), 400
 
         elif campo == 'id_proveedor':
             if not str(valor).isdigit() or int(valor) <= 0:
-                errores.append("El campo 'id_proveedor' debe ser un entero positivo")
+                return jsonify({"error": "El id_proveedor debe ser un número entero positivo"}), 400
 
-    if errores:
-        return jsonify({"errores": errores}), 400
-
-    # validar que el id_proveedor exista en la base
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM proveedores WHERE id = %s", (datos['id_proveedor'],))
-        if not cursor.fetchone():
-            return jsonify({"error": "El proveedor especificado no existe"}), 400
-
         cursor.execute(
             "INSERT INTO insumos (descripcion, tipo, precio_unitario, id_proveedor) VALUES (%s, %s, %s, %s)",
-            (datos['descripcion'], datos['tipo'], datos['precio_unitario'], datos['id_proveedor'])
+            (
+                datos['descripcion'],
+                datos['tipo'],
+                datos['precio_unitario'],
+                datos['id_proveedor']
+            )
         )
         conn.commit()
         cursor.close()
         conn.close()
         return jsonify({"mensaje": "Insumo creado exitosamente"}), 201
-
     except Exception as e:
         return jsonify({"error": f"Error al crear insumo: {str(e)}"}), 500
 

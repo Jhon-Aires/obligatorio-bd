@@ -3,7 +3,6 @@ from db import get_connection
 import re
 
 tecnicos_bp = Blueprint('tecnicos_bp', __name__)
-
 @tecnicos_bp.route('/', methods=['GET'])
 def listar_tecnicos():
     conn = get_connection()
@@ -15,39 +14,46 @@ def listar_tecnicos():
     return jsonify(resultado)
 
 @tecnicos_bp.route('/', methods=['POST'])
-def crear_tecnicos():
+def crear_tecnico():
     datos = request.json
-    conn = get_connection()
-    cursor = conn.cursor()
-    campos_requeridos = ['ci', 'nombre', 'apellido', 'contacto']
-    #verificaciones de campo
+    campos = ['ci', 'nombre', 'apellido', 'contacto']
     alfabetico = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$")
-    for campo in campos_requeridos:
-        valor = datos.get(campo)
 
-        if valor is None or str(valor).strip() == "":
-            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
 
         if campo == 'ci':
-            if not str(valor).isdigit() or not (7 <= len(str(valor)) <= 8):
-                return jsonify({"error": "El campo 'ci' debe ser un número de 7 u 8 cifras"}), 400
+            if not str(valor).isdigit() or not 7 <= len(str(valor)) <= 8:
+                return jsonify({"error": "La cédula debe tener 7 u 8 dígitos"}), 400
 
         elif campo in ['nombre', 'apellido']:
-            if not alfabetico.match(valor):
-                return jsonify({"error": f"El campo '{campo}' debe contener solo letras"}), 400
+            if not isinstance(valor, str) or not alfabetico.match(valor):
+                return jsonify({"error": f"El campo '{campo}' solo puede contener letras"}), 400
 
         elif campo == 'contacto':
-            if not re.fullmatch(r"09\d{7}", valor):
-                return jsonify({"error": "El campo 'contacto' debe ser un número de celular válido (ej: 09xxxxxxx)"}), 400
+            if not str(valor).isdigit():
+                return jsonify({"error": "El contacto debe ser un número"}), 400
 
-    cursor.execute(
-        "INSERT INTO tecnicos  (ci, nombre, apellido, contacto) VALUES (%s, %s, %s)",
-        (datos['ci'], datos['nombre'], datos['apellido'], datos['contacto'])
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensaje": "registro creado"}), 201
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO tecnicos (ci, nombre, apellido, contacto) VALUES (%s, %s, %s, %s)",
+            (datos['ci'], datos['nombre'], datos['apellido'], datos['contacto'])
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"mensaje": "Técnico creado exitosamente"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al crear técnico: {str(e)}"}), 500
+
 
 @tecnicos_bp.route('/', methods=['PATCH'])
 def editar_tecnico():

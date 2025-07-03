@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 clientes_bp = Blueprint('clientes_bp', __name__)
 
@@ -22,11 +23,34 @@ def listar_clientes():
 @login_required
 def crear_cliente():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('nombre', 'direccion')):
-        return jsonify({"error": "Faltan campos requeridos: nombre, direccion"}), 400
-    
+    campos = ['nombre', 'direccion']
+    alfabetico = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$")
+
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
+
+        if campo == 'nombre':
+            if not isinstance(valor, str) or not alfabetico.match(valor):
+                return jsonify({"error": "El nombre solo puede contener letras"}), 400
+
+        elif campo == 'direccion':
+            if not isinstance(valor, str) or valor.strip() == "":
+                return jsonify({"error": "La dirección debe ser un texto no vacío"}), 400
+
+    if 'contacto' in datos:
+        if not str(datos['contacto']).isdigit():
+            return jsonify({"error": "El contacto debe ser un número"}), 400
+
+    if 'correo' in datos:
+        if not isinstance(datos['correo'], str) or '@' not in datos['correo']:
+            return jsonify({"error": "El correo debe ser una dirección válida"}), 400
+
     try:
         conn = get_connection()
         cursor = conn.cursor()

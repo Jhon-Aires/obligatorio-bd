@@ -19,75 +19,49 @@ def listar_mantenimientos():
 @mantenimientos_bp.route('/', methods=['POST'])
 def crear_mantenimiento():
     datos = request.json
-
-    campos_requeridos = ['id', 'id_maquina_en_uso', 'ci_tecnico', 'tipo', 'fecha', 'observaciones']
+    campos = ['id_maquina_en_uso', 'ci_tecnico', 'tipo', 'fecha', 'observaciones']
 
     if not datos:
-        return jsonify({"error": "Ingrese bien sus datos"}), 400
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
 
-    for campo in campos_requeridos:
-        valor = datos.get(campo)
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
 
-        # Validar presencia y no vacío (observaciones puede estar vacío, pero debe existir)
-        if valor is None or (campo != 'observaciones' and isinstance(valor, str) and valor.strip() == ""):
-            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+        valor = datos[campo]
 
-        if campo in ['id', 'id_maquina_en_uso']:
+        if campo in ['id_maquina_en_uso', 'ci_tecnico']:
             if not str(valor).isdigit() or int(valor) <= 0:
                 return jsonify({"error": f"El campo '{campo}' debe ser un entero positivo"}), 400
-
-        elif campo == 'ci_tecnico':
-            if not (str(valor).isdigit() and 7 <= len(str(valor)) <= 8):
-                return jsonify({"error": "El campo 'ci_tecnico' debe ser una cédula válida (7 u 8 dígitos)"}), 400
-
-        elif campo == 'tipo':
-            # Solo validar que no esté vacío o nulo
-            if valor is None or (isinstance(valor, str) and valor.strip() == ""):
-                return jsonify({"error": "El campo 'tipo' no puede estar vacío"}), 400
 
         elif campo == 'fecha':
             try:
                 datetime.strptime(valor, '%Y-%m-%d')
-            except ValueError:
-                return jsonify({"error": "El campo 'fecha' debe tener el formato AAAA-MM-DD"}), 400
+            except:
+                return jsonify({"error": "La fecha debe tener formato AAAA-MM-DD"}), 400
 
-        elif campo == 'observaciones':
-            # Puede estar vacío, pero si no es string, error
-            if not isinstance(valor, str):
-                return jsonify({"error": "El campo 'observaciones' debe ser texto"}), 400
+        elif campo in ['tipo', 'observaciones']:
+            if not isinstance(valor, str) or valor.strip() == "":
+                return jsonify({"error": f"El campo '{campo}' debe ser texto no vacío"}), 400
 
     try:
         conn = get_connection()
         cursor = conn.cursor()
-
-        # Validar unicidad del ID
-        cursor.execute("SELECT 1 FROM mantenimientos WHERE id = %s", (datos['id'],))
-        if cursor.fetchone():
-            return jsonify({"error": "Ya existe un mantenimiento con ese ID"}), 409
-
-        # Validar existencia de id_maquina_en_uso
-        cursor.execute("SELECT 1 FROM maquinas_en_uso WHERE id = %s", (datos['id_maquina_en_uso'],))
-        if not cursor.fetchone():
-            return jsonify({"error": "No existe la máquina en uso especificada"}), 400
-
-        # Validar existencia de ci_tecnico
-        cursor.execute("SELECT 1 FROM tecnicos WHERE ci = %s", (datos['ci_tecnico'],))
-        if not cursor.fetchone():
-            return jsonify({"error": "No existe un técnico con esa cédula"}), 400
-
-        # Insertar el mantenimiento
         cursor.execute(
-            "INSERT INTO mantenimientos (id, id_maquina_en_uso, ci_tecnico, tipo, fecha, observaciones) VALUES (%s, %s, %s, %s, %s, %s)",
-            (datos['id'], datos['id_maquina_en_uso'], datos['ci_tecnico'], datos['tipo'], datos['fecha'], datos['observaciones'])
+            "INSERT INTO mantenimientos (id_maquina_en_uso, ci_tecnico, tipo, fecha, observaciones) VALUES (%s, %s, %s, %s, %s)",
+            (
+                datos['id_maquina_en_uso'],
+                datos['ci_tecnico'],
+                datos['tipo'],
+                datos['fecha'],
+                datos['observaciones']
+            )
         )
         conn.commit()
         cursor.close()
         conn.close()
-
         return jsonify({"mensaje": "Mantenimiento creado"}), 201
-
     except Exception as e:
-        print(f"[ERROR] {str(e)}")
         return jsonify({"error": f"Error al crear mantenimiento: {str(e)}"}), 500
 
 @mantenimientos_bp.route('/', methods=['PATCH'])

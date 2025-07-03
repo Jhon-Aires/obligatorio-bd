@@ -19,16 +19,17 @@ def listar_registro_consumo():
 @registro_consumo_bp.route('/', methods=['POST'])
 def crear_registro_consumo():
     datos = request.json
-    conn = get_connection()
-    cursor = conn.cursor()
-    campos_requeridos = ['id', 'id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
-    for campo in campos_requeridos:
-        valor = datos.get(campo)
-        # Presencia y no vacío
-        if valor is None or (isinstance(valor, str) and valor.strip() == ""):
-            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+    campos = ['id', 'id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
 
-        # Validaciones específicas por campo
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
+
         if campo in ['id', 'id_maquina_en_uso', 'id_insumo']:
             if not str(valor).isdigit() or int(valor) <= 0:
                 return jsonify({"error": f"El campo '{campo}' debe ser un entero positivo"}), 400
@@ -36,25 +37,35 @@ def crear_registro_consumo():
         elif campo == 'fecha':
             try:
                 datetime.strptime(valor, '%Y-%m-%d')
-            except ValueError:
-                return jsonify({"error": "El campo 'fecha' debe tener el formato AAAA-MM-DD"}), 400
+            except:
+                return jsonify({"error": "La fecha debe tener formato AAAA-MM-DD"}), 400
 
         elif campo == 'cantidad_usada':
             try:
-                cantidad = float(valor)
-                if cantidad <= 0:
-                    return jsonify({"error": "La 'cantidad_usada' debe ser un número mayor a 0"}), 400
-            except (ValueError, TypeError):
-                return jsonify({"error": "El campo 'cantidad_usada' debe ser un número válido"}), 400
-            
-    cursor.execute(
-        "INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES (%s, %s, %s, %s, %s)",
-        (datos['id'], datos['id_maquina_en_uso'], datos['id_insumo'], datos['fecha'], datos['cantidad_usada'])
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensaje": "registro creado"}), 201
+                if float(valor) <= 0:
+                    return jsonify({"error": "La cantidad usada debe ser positiva"}), 400
+            except:
+                return jsonify({"error": "El campo 'cantidad_usada' debe ser un número"}), 400
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES (%s, %s, %s, %s, %s)",
+            (
+                datos['id'],
+                datos['id_maquina_en_uso'],
+                datos['id_insumo'],
+                datos['fecha'],
+                datos['cantidad_usada']
+            )
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"mensaje": "Registro creado"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error al crear registro: {str(e)}"}), 500
 
 @registro_consumo_bp.route('/', methods=['PATCH'])
 def editar_registro_consumo():

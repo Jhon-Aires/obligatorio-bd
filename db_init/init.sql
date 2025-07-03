@@ -76,8 +76,10 @@ CREATE TABLE IF NOT EXISTS mantenimientos (
     UNIQUE (fecha, ci_tecnico),
 
     FOREIGN KEY (ci_tecnico) REFERENCES tecnicos(ci) ON DELETE CASCADE,
-    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id) ON DELETE CASCADE
+    FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id) ON DELETE CASCADE,
+    CONSTRAINT unique_tecnico_fecha UNIQUE (ci_tecnico, fecha)
 );
+
 
 CREATE TABLE IF NOT EXISTS registro_consumo (
     id VARCHAR(35) PRIMARY KEY, 

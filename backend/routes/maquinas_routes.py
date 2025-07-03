@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 maquinas_bp = Blueprint('maquinas_bp', __name__)
 
@@ -20,13 +21,33 @@ def listar_maquinas():
 
 @maquinas_bp.route('/', methods=['POST'])
 @admin_required  # Solo administradores pueden crear máquinas
+
 def crear_maquina():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('modelo', 'costo_alquiler_mensual')):
-        return jsonify({"error": "Faltan campos requeridos: modelo, costo_alquiler_mensual"}), 400
-    
+    campos_requeridos = ['modelo', 'costo_alquiler_mensual']
+
+    if not datos:
+        return jsonify({"error": "ingrese sus datos"}), 400
+
+    for campo in campos_requeridos:
+        valor = datos.get(campo)
+
+        if valor is None or (isinstance(valor, str) and valor.strip() == ""):
+            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+
+        if campo == 'modelo':
+            if not re.match(r"^[\w\s\-\.\#]+$", valor):
+                return jsonify({"error": "El campo 'modelo' contiene caracteres no válidos"}), 400
+
+        elif campo == 'costo_alquiler_mensual':
+            try:
+                costo = float(valor)
+                if costo <= 0:
+                    return jsonify({"error": "El 'costo_alquiler_mensual' debe ser mayor a 0"}), 400
+            except (ValueError, TypeError):
+                return jsonify({"error": "El campo 'costo_alquiler_mensual' debe ser un número válido"}), 400
+
+    # Si todo es válido, insertar
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -39,6 +60,7 @@ def crear_maquina():
         conn.close()
         return jsonify({"mensaje": "Máquina creada exitosamente"}), 201
     except Exception as e:
+        print(f"[ERROR] {str(e)}") 
         return jsonify({"error": f"Error al crear máquina: {str(e)}"}), 500
 
 # Editar máquina - Solo administradores

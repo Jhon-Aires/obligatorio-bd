@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
@@ -22,11 +23,30 @@ def listar_proveedores():
 @admin_required  # Solo administradores pueden crear proveedores
 def crear_proveedor():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('nombre', 'apellido', 'contacto')):
-        return jsonify({"error": "Faltan campos requeridos: nombre, apellido, contacto"}), 400
-    
+
+    campos_requeridos = ['nombre', 'apellido', 'contacto']
+    alfabetico = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$")
+
+    if not datos:
+        return jsonify({"error": "No se recibió un JSON válido"}), 400
+
+    for campo in campos_requeridos:
+        valor = datos.get(campo)
+
+        # Verificar que el campo esté presente y no esté vacío
+        if valor is None or (isinstance(valor, str) and valor.strip() == ""):
+            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+
+        # Validaciones específicas
+        if campo in ['nombre', 'apellido']:
+            if not alfabetico.match(valor):
+                return jsonify({"error": f"El campo '{campo}' debe contener solo letras y espacios"}), 400
+
+        elif campo == 'contacto':
+            if not re.fullmatch(r"09\d{7}", valor):
+                return jsonify({"error": "El campo 'contacto' debe ser un número de celular válido (ej: 09xxxxxxx)"}), 400
+
+    # Si pasa todas las validaciones, se intenta insertar
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -39,7 +59,7 @@ def crear_proveedor():
         conn.close()
         return jsonify({"mensaje": "Proveedor creado exitosamente"}), 201
     except Exception as e:
-        print(f"[ERROR] {str(e)}")  # Agregá esta línea
+        print(f"[ERROR] {str(e)}")
         return jsonify({"error": f"Error al crear proveedor: {str(e)}"}), 500
 
 

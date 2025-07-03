@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
+import re
+from datetime import datetime
 
 registro_consumo_bp = Blueprint('registro_consumo_bp', __name__)
 
@@ -19,6 +21,32 @@ def crear_registro_consumo():
     datos = request.json
     conn = get_connection()
     cursor = conn.cursor()
+    campos_requeridos = ['id', 'id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
+    for campo in campos_requeridos:
+        valor = datos.get(campo)
+        # Presencia y no vacío
+        if valor is None or (isinstance(valor, str) and valor.strip() == ""):
+            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+
+        # Validaciones específicas por campo
+        if campo in ['id', 'id_maquina_en_uso', 'id_insumo']:
+            if not str(valor).isdigit() or int(valor) <= 0:
+                return jsonify({"error": f"El campo '{campo}' debe ser un entero positivo"}), 400
+
+        elif campo == 'fecha':
+            try:
+                datetime.strptime(valor, '%Y-%m-%d')
+            except ValueError:
+                return jsonify({"error": "El campo 'fecha' debe tener el formato AAAA-MM-DD"}), 400
+
+        elif campo == 'cantidad_usada':
+            try:
+                cantidad = float(valor)
+                if cantidad <= 0:
+                    return jsonify({"error": "La 'cantidad_usada' debe ser un número mayor a 0"}), 400
+            except (ValueError, TypeError):
+                return jsonify({"error": "El campo 'cantidad_usada' debe ser un número válido"}), 400
+            
     cursor.execute(
         "INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES (%s, %s, %s, %s, %s)",
         (datos['id'], datos['id_maquina_en_uso'], datos['id_insumo'], datos['fecha'], datos['cantidad_usada'])
@@ -38,7 +66,6 @@ def editar_registro_consumo():
     
     campos_actualizados = []
     values = []
-
     #Se construye la query en base a los campos que le pasaste por json
     campos_permitidos = ['id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
     for campo in campos_permitidos:
@@ -63,7 +90,7 @@ def editar_registro_consumo():
     return jsonify({"mensaje": "Registro modificado"}), 204
 
 
-#Se permite borrar solo por ID, falta borrado en cascada en la base y en el backend
+#Se permite borrar solo por ID
 @registro_consumo_bp.route('/', methods=['DELETE'])
 def eliminar_registro():
     datos = request.json

@@ -111,13 +111,13 @@ def eliminar_cliente():
 # Total mensual a cobrar a cada cliente (suma de alquiler de máquinas más
 #costo de insumos consumidos
 @clientes_bp.route('/total_mensual', methods=['GET'])
+@admin_required
 def total_mensual_cliente():
     mes = request.args.get('mes')     # se ponen en la url por ejemplo: 
     anio = request.args.get('anio')   # GET http://localhost:5001/clientes/total-mensual?mes=6&anio=2025
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-
 
 #SUM(DISTINCT m.costo_alquiler_mensual) puede hacer que si una máquina aparece más de una vez en la combinación, 
 # su costo solo se cuente una vez.
@@ -165,6 +165,7 @@ def total_mensual_cliente():
 
 #Clientes ordenados por cant de maquinas
 @clientes_bp.route('/cant_maquina', methods=['GET'])
+@admin_required
 def clientes_ordenados_por_maquinas():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)

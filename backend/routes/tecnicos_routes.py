@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
+import re
 
 tecnicos_bp = Blueprint('tecnicos_bp', __name__)
 
@@ -18,6 +19,27 @@ def crear_tecnicos():
     datos = request.json
     conn = get_connection()
     cursor = conn.cursor()
+    campos_requeridos = ['ci', 'nombre', 'apellido', 'contacto']
+    #verificaciones de campo
+    alfabetico = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$")
+    for campo in campos_requeridos:
+        valor = datos.get(campo)
+
+        if valor is None or str(valor).strip() == "":
+            return jsonify({"error": f"El campo '{campo}' no puede estar vacío"}), 400
+
+        if campo == 'ci':
+            if not str(valor).isdigit() or not (7 <= len(str(valor)) <= 8):
+                return jsonify({"error": "El campo 'ci' debe ser un número de 7 u 8 cifras"}), 400
+
+        elif campo in ['nombre', 'apellido']:
+            if not alfabetico.match(valor):
+                return jsonify({"error": f"El campo '{campo}' debe contener solo letras"}), 400
+
+        elif campo == 'contacto':
+            if not re.fullmatch(r"09\d{7}", valor):
+                return jsonify({"error": "El campo 'contacto' debe ser un número de celular válido (ej: 09xxxxxxx)"}), 400
+
     cursor.execute(
         "INSERT INTO tecnicos  (ci, nombre, apellido, contacto) VALUES (%s, %s, %s)",
         (datos['ci'], datos['nombre'], datos['apellido'], datos['contacto'])
@@ -62,34 +84,23 @@ def editar_tecnico():
     return jsonify({"mensaje": "Tecnico modificado"}), 204
 
 
-# #Se permite borrar solo por ID
+# #Se permite borrar solo por CI
 @tecnicos_bp.route('/', methods=['DELETE'])
 def eliminar_tecnico():
     datos = request.json
     if 'ci' not in datos:
         return jsonify({"error": "Falta el parámetro ci"}), 400
-
     conn = get_connection() 
     cursor = conn.cursor()
-        # Consultar si tiene máquinas en uso
-    cursor.execute(
-        "SELECT COUNT(*) FROM mantenimientos WHERE ci_tecnico = %s",(datos['ci'],))
-    cantidad_mantenimientos = cursor.fetchone()[0]
-    
-    if cantidad_mantenimientos > 0:
-        return (jsonify({"error": f"El tecnico tiene {cantidad_mantenimientos} mantenimientos(s) en curso. Elimine dichos mantenimiento."}),409)
-        #Elimina tecnico si no tiene máquinas en uso
     cursor.execute(
         "DELETE FROM tecnicos WHERE ci = %s",(datos['ci'],))
     conn.commit()
-
     if cursor.rowcount == 0:
         return jsonify({"error": "tecnico no encontrado"}), 404
-
     return jsonify({"mensaje": "tecnico eliminado"}), 200
 
 
-@tecnicos_bp.route('/mantenimiento', methods=['GET'])
+@tecnicos_bp.route('/mantenimientos', methods=['GET'])
 def tecnicos_ordenados_por_mantenimientos():
     conn = get_connection()
     #cada fila que devuelve la consulta venga como un diccionario, no como una tupla.

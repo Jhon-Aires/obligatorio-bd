@@ -1,4 +1,6 @@
-CREATE DATABASE IF NOT EXISTS marloy;
+CREATE DATABASE IF NOT EXISTS marloy
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 USE marloy;
 
@@ -42,6 +44,10 @@ CREATE TABLE IF NOT EXISTS maquinas_en_uso (
     modelo VARCHAR(30),
     id_cliente INT,
     ubicacion_cliente VARCHAR(100),
+
+    -- restriccion: modelo y ubicacion_cliente unica
+    UNIQUE (modelo, ubicacion_cliente),
+
     FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE,
     FOREIGN KEY (modelo) REFERENCES maquinas(modelo) ON DELETE CASCADE
 );
@@ -58,8 +64,17 @@ CREATE TABLE IF NOT EXISTS mantenimientos (
     id_maquina_en_uso INT, 
     ci_tecnico INT NOT NULL, 
     tipo VARCHAR(50) NOT NULL, 
-    fecha DATE NOT NULL,
+    fecha DATETIME,
     observaciones VARCHAR(255),
+    -- restriccion: minutos y segundos en cero
+    CHECK (
+        MINUTE(fecha) = 0 AND
+        SECOND(fecha) = 0
+    ),
+
+    -- restriccion: fecha y tecnico unica
+    UNIQUE (fecha, ci_tecnico),
+
     FOREIGN KEY (ci_tecnico) REFERENCES tecnicos(ci) ON DELETE CASCADE,
     FOREIGN KEY (id_maquina_en_uso) REFERENCES maquinas_en_uso(id) ON DELETE CASCADE
 );
@@ -75,7 +90,8 @@ CREATE TABLE IF NOT EXISTS registro_consumo (
 ); 
 
 INSERT INTO login (correo, contrasena, es_administrador) VALUES 
-    ('admin@empresa.com', 'admin123', TRUE);
+    ('admin@empresa.com', 'admin123', TRUE),
+    ('limitadito@empresa.com', 'limitadito123', FALSE);
 
 INSERT INTO proveedores (nombre, apellido, contacto) VALUES
     ('Carlos', 'Pérez', '0987654321'),
@@ -104,8 +120,8 @@ INSERT INTO tecnicos (ci, nombre, apellido, contacto) VALUES
     (50871234, 'Martina', 'Fernández', '098444555');
 
 INSERT INTO mantenimientos (id, id_maquina_en_uso, ci_tecnico, tipo, fecha, observaciones) VALUES
-    (1, 1, 45781234, 'Cambio de filtro', '2025-05-01', 'Filtro de aire obstruido'),
-    (2, 2, 50871234, 'Lubricación general', '2025-05-15', 'Aplicado aceite de alto rendimiento');
+    (1, 1, 45781234, 'Cambio de filtro', '2025-05-01 08:00:00', 'Filtro de aire obstruido'),
+    (2, 2, 50871234, 'Lubricación general', '2025-05-15 10:00:00', 'Aplicado aceite de alto rendimiento');
 
 INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES
     ('rc-001', 1, 1, '2025-05-10', 5),

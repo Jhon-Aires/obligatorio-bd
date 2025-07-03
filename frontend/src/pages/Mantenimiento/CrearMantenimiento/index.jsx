@@ -117,7 +117,7 @@ const CrearMantenimiento = () => {
               <option value="">Seleccione una máquina</option>
               {maquinasEnUso.map((maquina) => (
                 <option key={maquina.id} value={maquina.id}>
-                  {`ID: ${maquina.id} - Cliente: ${maquina.id_cliente}`}
+                  {`ID Maquina: ${maquina.id} - Cliente: ${maquina.id_cliente}`}
                 </option>
               ))}
             </select>

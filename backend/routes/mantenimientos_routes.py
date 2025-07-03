@@ -20,7 +20,7 @@ def crear_mantenimiento():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO mantenimientos (id, id_maquina_en_uso, ci_tecnico, tipo, fecha, observaciones) VALUES (%s, %s, %s)",
+        "INSERT INTO mantenimientos (id, id_maquina_en_uso, ci_tecnico, tipo, fecha, observaciones) VALUES (%s, %s, %s, %s, %s, %s)",
         (datos['id'], datos['id_maquina_en_uso'], datos['ci_tecnico'], datos['tipo'], datos['fecha'], datos['observaciones'])
     )
     conn.commit()

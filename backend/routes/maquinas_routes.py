@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 maquinas_bp = Blueprint('maquinas_bp', __name__)
 
@@ -22,11 +23,28 @@ def listar_maquinas():
 @admin_required  # Solo administradores pueden crear máquinas
 def crear_maquina():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('modelo', 'costo_alquiler_mensual')):
-        return jsonify({"error": "Faltan campos requeridos: modelo, costo_alquiler_mensual"}), 400
-    
+    campos = ['modelo', 'costo_alquiler_mensual']
+
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
+
+        if campo == 'modelo':
+            if not isinstance(valor, str) or valor.strip() == "":
+                return jsonify({"error": "El modelo debe ser un texto no vacío"}), 400
+
+        elif campo == 'costo_alquiler_mensual':
+            try:
+                if float(valor) <= 0:
+                    return jsonify({"error": "El costo debe ser un número positivo"}), 400
+            except:
+                return jsonify({"error": "El campo 'costo_alquiler_mensual' debe ser numérico"}), 400
+
     try:
         conn = get_connection()
         cursor = conn.cursor()

@@ -24,9 +24,9 @@ const CrearRegistroConsumo = () => {
       .then((data) => setMaquinasEnUso(data))
       .catch((error) => {
         console.error("Error fetching maquinas en uso:", error);
-        setMessage({ 
-          type: "error", 
-          text: "Error al cargar las máquinas en uso" 
+        setMessage({
+          type: "error",
+          text: "Error al cargar las máquinas en uso"
         });
       });
 
@@ -36,9 +36,9 @@ const CrearRegistroConsumo = () => {
       .then((data) => setInsumos(data))
       .catch((error) => {
         console.error("Error fetching insumos:", error);
-        setMessage({ 
-          type: "error", 
-          text: "Error al cargar los insumos" 
+        setMessage({
+          type: "error",
+          text: "Error al cargar los insumos"
         });
       });
   }, []);
@@ -59,7 +59,7 @@ const CrearRegistroConsumo = () => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      
+
       if (data.error) {
         setMessage({ type: "error", text: `Error: ${data.error} - ${data.mensaje}` });
       } else {
@@ -77,14 +77,14 @@ const CrearRegistroConsumo = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Crear Nuevo Registro de Consumo</h1>
-      
+
       <div className={styles.card}>
         {message.text && (
           <div className={`${styles.message} ${styles[message.type]}`}>
             {message.text}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="id_maquina_en_uso" className={styles.label}>Máquina en Uso</label>

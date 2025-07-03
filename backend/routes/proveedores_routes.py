@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
@@ -22,11 +23,26 @@ def listar_proveedores():
 @admin_required  # Solo administradores pueden crear proveedores
 def crear_proveedor():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('nombre', 'apellido', 'contacto')):
-        return jsonify({"error": "Faltan campos requeridos: nombre, apellido, contacto"}), 400
-    
+    campos = ['nombre', 'apellido', 'contacto']
+    alfabetico = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-]+$")
+
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
+
+        if campo in ['nombre', 'apellido']:
+            if not isinstance(valor, str) or not alfabetico.match(valor):
+                return jsonify({"error": f"El campo '{campo}' solo puede contener letras"}), 400
+
+        elif campo == 'contacto':
+            if not str(valor).isdigit():
+                return jsonify({"error": "El contacto debe ser un número"}), 400
+
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -39,9 +55,7 @@ def crear_proveedor():
         conn.close()
         return jsonify({"mensaje": "Proveedor creado exitosamente"}), 201
     except Exception as e:
-        print(f"[ERROR] {str(e)}")  # Agregá esta línea
         return jsonify({"error": f"Error al crear proveedor: {str(e)}"}), 500
-
 
 @proveedores_bp.route('/', methods=['PATCH'])
 def editar_proveedor():

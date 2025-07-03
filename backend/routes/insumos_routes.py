@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
+import re
 
 insumos_bp = Blueprint('insumos_bp', __name__)
 
@@ -22,17 +23,43 @@ def listar_insumos():
 @login_required
 def crear_insumo():
     datos = request.json
-    
-    # Validar campos requeridos
-    if not datos or not all(k in datos for k in ('descripcion', 'tipo', 'precio_unitario', 'id_proveedor')):
-        return jsonify({"error": "Faltan campos requeridos: descripcion, tipo, precio_unitario, id_proveedor"}), 400
-    
+    campos = ['descripcion', 'tipo', 'precio_unitario', 'id_proveedor']
+
+    if not datos:
+        return jsonify({"error": "Ingrese sus datos correctamente"}), 400
+
+    for campo in campos:
+        if campo not in datos:
+            return jsonify({"error": f"Falta el campo requerido: {campo}"}), 400
+
+        valor = datos[campo]
+
+        if campo in ['descripcion', 'tipo']:
+            if not isinstance(valor, str) or valor.strip() == "":
+                return jsonify({"error": f"El campo '{campo}' debe ser texto no vacío"}), 400
+
+        elif campo == 'precio_unitario':
+            try:
+                if float(valor) < 0:
+                    return jsonify({"error": "El precio debe ser un número positivo"}), 400
+            except:
+                return jsonify({"error": "El precio debe ser un número válido"}), 400
+
+        elif campo == 'id_proveedor':
+            if not str(valor).isdigit() or int(valor) <= 0:
+                return jsonify({"error": "El id_proveedor debe ser un número entero positivo"}), 400
+
     try:
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO insumos (descripcion, tipo, precio_unitario, id_proveedor) VALUES (%s, %s, %s, %s)",
-            (datos['descripcion'], datos['tipo'], datos['precio_unitario'], datos['id_proveedor'])
+            (
+                datos['descripcion'],
+                datos['tipo'],
+                datos['precio_unitario'],
+                datos['id_proveedor']
+            )
         )
         conn.commit()
         cursor.close()
@@ -42,6 +69,7 @@ def crear_insumo():
         return jsonify({"error": f"Error al crear insumo: {str(e)}"}), 500
 
 @insumos_bp.route('/', methods=['PATCH'])
+@login_required
 def editar_insumo():
     datos = request.json
     conn = get_connection()
@@ -76,6 +104,8 @@ def editar_insumo():
     return jsonify({"mensaje": "Insumo modificado"}), 204
 
 #Se permite borrar solo por ID
+@insumos_bp.route('/consumo', methods=['DELETE'])
+@login_required
 def eliminar_insumo():
     datos = request.json
     if 'id' not in datos:
@@ -96,6 +126,7 @@ def eliminar_insumo():
 
 #Insumos ordenados por mayor consumo total (en unidades) y su costo total (precio × cantidad usada).
 @insumos_bp.route('/consumo', methods=['GET'])
+@login_required
 def insumos_mas_consumidos():
     #No pide ningún filtro asi que no se llaman parametros
     conn = get_connection()

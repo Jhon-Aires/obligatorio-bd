@@ -9,9 +9,12 @@ const EliminarInsumo = () => {
   const [insumos, setInsumos] = useState([]);
   const [selectedInsumo, setSelectedInsumo] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [proveedores, setProveedores] = useState([]);
+  const [registrosConsumo, setRegistrosConsumo] = useState([]);
 
-  // Cargar lista de insumos al montar el componente
+  // Cargar lista de insumos y proveedores al montar el componente
   useEffect(() => {
+    // Cargar insumos
     fetchFromApi("/insumos/")
       .then((response) => response.json())
       .then((data) => setInsumos(data))
@@ -22,7 +25,47 @@ const EliminarInsumo = () => {
           text: "Error al cargar la lista de insumos",
         });
       });
+
+    // Cargar proveedores
+    fetchFromApi("/proveedores/")
+      .then((response) => response.json())
+      .then((data) => setProveedores(data))
+      .catch((error) => {
+        console.error("Error:", error);
+        setMessage({ 
+          type: "error", 
+          text: "Error al cargar los proveedores",
+        });
+      });
   }, []);
+
+  // Cargar registros de consumo cuando se selecciona un insumo
+  useEffect(() => {
+    if (selectedInsumo) {
+      fetchFromApi("/registro_consumo/")
+        .then((response) => response.json())
+        .then((data) => {
+          const registrosDelInsumo = data.filter(
+            registro => registro.id_insumo === parseInt(selectedInsumo)
+          );
+          setRegistrosConsumo(registrosDelInsumo);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setMessage({
+            type: "error",
+            text: "Error al cargar los registros de consumo",
+          });
+        });
+    } else {
+      setRegistrosConsumo([]);
+    }
+  }, [selectedInsumo]);
+
+  const getProveedorInfo = (id_proveedor) => {
+    const proveedor = proveedores.find(p => p.id === id_proveedor);
+    return proveedor ? `${proveedor.nombre} ${proveedor.apellido}` : 'Proveedor no encontrado';
+  };
 
   const handleChange = (e) => {
     setSelectedInsumo(e.target.value);
@@ -37,7 +80,11 @@ const EliminarInsumo = () => {
     }
 
     // Confirmar antes de eliminar
-    if (!window.confirm("¿Está seguro que desea eliminar este insumo? Esta acción eliminará también todos los registros de consumo asociados.")) {
+    const mensajeConfirmacion = registrosConsumo.length > 0
+      ? `¿Está seguro que desea eliminar este insumo? Esta acción eliminará también ${registrosConsumo.length} registro(s) de consumo asociado(s).`
+      : "¿Está seguro que desea eliminar este insumo?";
+
+    if (!window.confirm(mensajeConfirmacion)) {
       return;
     }
 
@@ -75,6 +122,16 @@ const EliminarInsumo = () => {
     }
   };
 
+  // Función para formatear la fecha
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Eliminar Insumo</h1>
@@ -102,7 +159,7 @@ const EliminarInsumo = () => {
               <option value=''>Seleccione un insumo</option>
               {insumos.map((insumo) => (
                 <option key={insumo.id} value={insumo.id}>
-                  {insumo.descripcion} - {insumo.tipo} - ${insumo.precio_unitario}
+                  {`${insumo.descripcion} - Tipo: ${insumo.tipo} - Precio: $${insumo.precio_unitario} - Proveedor: ${getProveedorInfo(insumo.id_proveedor)}`}
                 </option>
               ))}
             </select>
@@ -110,7 +167,19 @@ const EliminarInsumo = () => {
 
           {selectedInsumo && (
             <div className={styles.warningMessage}>
-              <p>⚠️ ADVERTENCIA: Esta acción eliminará permanentemente el insumo y todos sus registros de consumo asociados.</p>
+              <p>⚠️ ADVERTENCIA: Esta acción eliminará permanentemente el insumo seleccionado.</p>
+              {registrosConsumo.length > 0 && (
+                <div className={styles.warningDetails}>
+                  <p>Los siguientes registros de consumo también serán eliminados:</p>
+                  <ul>
+                    {registrosConsumo.map((registro) => (
+                      <li key={registro.id}>
+                        ID: {registro.id} - Fecha: {formatDate(registro.fecha)} - Cantidad: {registro.cantidad_usada}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <button type='submit' className={`${styles.button} ${styles.deleteButton}`}>
                 Eliminar Insumo
               </button>

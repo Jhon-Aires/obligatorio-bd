@@ -7,8 +7,18 @@ const defaultOptions = {
 };
 
 export const fetchFromApi = async (endpoint, options = {}) => {
-  return fetch(`http://localhost:5001${endpoint}`, {
+  const mergedOptions = {
     ...defaultOptions,
     ...options,
-  });
+    headers: {
+      ...defaultOptions.headers,
+      ...(options.headers || {}),
+    },
+  };
+
+  // Log para depuración
+  console.log("URL:", `http://localhost:5001${endpoint}`);
+  console.log("Opciones:", mergedOptions);
+
+  return fetch(`http://localhost:5001${endpoint}`, mergedOptions);
 };

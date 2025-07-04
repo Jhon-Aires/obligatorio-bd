@@ -17,6 +17,7 @@ import EliminarCliente from './pages/Cliente/EliminarCliente';
 import CrearMaquina from './pages/Maquina/CrearMaquina';
 import ListarMaquinas from './pages/Maquina/ListarMaquinas';
 import ModificarMaquina from './pages/Maquina/ModificarMaquina';
+import EliminarMaquina from './pages/Maquina/EliminarMaquina';
 import CrearMaquinaEnUso from './pages/MaquinaEnUso/CrearMaquinaEnUso';
 import ListarMaquinasEnUso from './pages/MaquinaEnUso/ListarMaquinasEnUso';
 import EliminarAsignacion from './pages/MaquinaEnUso/EliminarAsignacion';
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/proveedor/baja" element={<EliminarProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
           <Route path="/maquina/modificar" element={<ModificarMaquina />} />
+          <Route path="/maquina/baja" element={<EliminarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
           <Route path="/maquinaenuso/listar" element={<ListarMaquinasEnUso />} />
           <Route path="/maquinaenuso/baja" element={<EliminarAsignacion />} />

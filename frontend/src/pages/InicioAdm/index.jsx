@@ -86,6 +86,9 @@ const InicioAdm = () => {
               <Link to="/cliente/listar" className={styles.actionBtn}>
                 Listar Clientes
               </Link>
+              <Link to="/cliente/modificar" className={styles.actionBtn}>
+                Modificar Clientes
+              </Link>
             </div>
           </section>
 
@@ -99,6 +102,9 @@ const InicioAdm = () => {
               <Link to="/maquina/listar" className={styles.actionBtn}>
                 Listar Máquinas
               </Link>
+              <Link to="/maquina/modificar" className={styles.actionBtn}>
+                Modificar Máquinas
+              </Link>
             </div>
           </section>
 
@@ -111,6 +117,9 @@ const InicioAdm = () => {
               </Link>
               <Link to="/tecnico/listar" className={styles.actionBtn}>
                 Listar Técnicos
+              </Link>
+              <Link to="/tecnico/modificar" className={styles.actionBtn}>
+                Modificar Técnicos
               </Link>
             </div>
           </section>

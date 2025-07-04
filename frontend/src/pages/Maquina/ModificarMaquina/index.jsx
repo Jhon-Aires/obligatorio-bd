@@ -7,11 +7,8 @@ import styles from "../../common.module.css";
 const ModificarMaquina = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    id: "",
-    nombre: "",
-    direccion: "",
-    contacto: "",
-    correo: "",
+    modelo: "",
+    costo_alquiler_mensual: "",
   });
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -26,35 +23,40 @@ const ModificarMaquina = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     
-    if (!formData.id) {
-      setMessage({ type: "error", text: "Por favor ingrese el ID del cliente" });
+    if (!formData.modelo) {
+      setMessage({ type: "error", text: "Por favor ingrese el modelo de la máquina" });
+      return;
+    }
+    
+    if (!formData.costo_alquiler_mensual) {
+      setMessage({ type: "error", text: "Por favor ingrese el nuevo costo de alquiler mensual" });
       return;
     }
     
     try {
-      const response = await fetchFromApi("/clientes/", {
+      const response = await fetchFromApi("/maquinas/", {
         method: "PATCH",
         body: JSON.stringify(formData),
       });
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al modificar cliente");
+        throw new Error(errorData.error || "Error al modificar máquina");
       }
       
-      setMessage({ type: "success", text: "Cliente modificado con éxito" });
+      setMessage({ type: "success", text: "Máquina modificada con éxito" });
       setTimeout(() => {
-        navigate("/cliente/listar");
+        navigate("/maquina/listar");
       }, 2000);
     } catch (error) {
       console.error("Error:", error);
-      setMessage({ type: "error", text: error.message || "Error al modificar cliente" });
+      setMessage({ type: "error", text: error.message || "Error al modificar máquina" });
     }
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Modificar Cliente</h1>
+      <h1 className={styles.title}>Modificar Máquina</h1>
       
       <div className={styles.card}>
         {message.text && (
@@ -65,64 +67,32 @@ const ModificarMaquina = () => {
         
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="id" className={styles.label}>ID del Cliente</label>
+            <label htmlFor="modelo" className={styles.label}>Modelo de la Máquina</label>
             <input
-              id="id"
-              name="id"
-              type="number"
-              value={formData.id}
+              id="modelo"
+              name="modelo"
+              type="text"
+              value={formData.modelo}
               onChange={handleChange}
               className={styles.input}
               required
-              placeholder="Ingrese el ID del cliente a modificar"
+              placeholder="Ingrese el modelo de la máquina a modificar"
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="nombre" className={styles.label}>Nombre</label>
+            <label htmlFor="costo_alquiler_mensual" className={styles.label}>Nuevo Costo de Alquiler Mensual</label>
             <input
-              id="nombre"
-              name="nombre"
-              type="text"
-              value={formData.nombre}
+              id="costo_alquiler_mensual"
+              name="costo_alquiler_mensual"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.costo_alquiler_mensual}
               onChange={handleChange}
               className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="direccion" className={styles.label}>Dirección</label>
-            <input
-              id="direccion"
-              name="direccion"
-              type="text"
-              value={formData.direccion}
-              onChange={handleChange}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="contacto" className={styles.label}>Contacto</label>
-            <input
-              id="contacto"
-              name="contacto"
-              type="text"
-              value={formData.contacto}
-              onChange={handleChange}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="correo" className={styles.label}>Correo Electrónico</label>
-            <input
-              id="correo"
-              name="correo"
-              type="email"
-              value={formData.correo}
-              onChange={handleChange}
-              className={styles.input}
+              required
+              placeholder="Ingrese el nuevo costo de alquiler mensual"
             />
           </div>
 

@@ -12,10 +12,12 @@ import ListarClientes from './pages/Cliente/ListarClientes';
 import ModificarCliente from './pages/Cliente/ModificarCliente';
 import CrearMaquina from './pages/Maquina/CrearMaquina';
 import ListarMaquinas from './pages/Maquina/ListarMaquinas';
+import ModificarMaquina from './pages/Maquina/ModificarMaquina';
 import CrearMaquinaEnUso from './pages/MaquinaEnUso/CrearMaquinaEnUso';
 import ListarMaquinasEnUso from './pages/MaquinaEnUso/ListarMaquinasEnUso';
 import CrearTecnico from './pages/Tecnico/CrearTecnico';
 import ListarTecnicos from './pages/Tecnico/ListarTecnicos';
+import ModificarTecnico from './pages/Tecnico/ModificarTecnico';
 import CrearMantenimiento from './pages/Mantenimiento/CrearMantenimiento';
 import ListarMantenimientos from './pages/Mantenimiento/ListarMantenimientos';
 import CrearRegistroConsumo from './pages/RegistroConsumo/CrearRegistroConsumo';
@@ -37,10 +39,12 @@ export default function App() {
           <Route path="/usuario/listar" element={<ListarUsuarios />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
+          <Route path="/maquina/modificar" element={<ModificarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
           <Route path="/maquinaenuso/listar" element={<ListarMaquinasEnUso />} />
           <Route path="/tecnico/alta" element={<CrearTecnico />} />
           <Route path="/tecnico/listar" element={<ListarTecnicos />} />
+          <Route path="/tecnico/modificar" element={<ModificarTecnico />} />
           <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
           <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
         </Route>

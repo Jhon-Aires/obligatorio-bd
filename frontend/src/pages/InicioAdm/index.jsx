@@ -44,8 +44,8 @@ const InicioAdm = () => {
               <Link to="/usuario/listar" className={styles.actionBtn}>
                 Listar Usuarios
               </Link>
-              <Link to="/cliente/modificar" className={styles.actionBtn}>
-                Modificar Clientes
+              <Link to="/usuario/modificar" className={styles.actionBtn}>
+                Modificar Usuarios
               </Link>
             </div>
           </section>

@@ -6,11 +6,14 @@ import Login from "./pages/Login";
 import CrearProveedor from './pages/Proveedor/CrearProveedor';
 import ListarProveedores from './pages/Proveedor/ListarProveedores';
 import ModificarProveedor from './pages/Proveedor/ModificarProveedor';
+import EliminarProveedor from './pages/Proveedor/EliminarProveedor';
 import CrearInsumo from './pages/Insumo/CrearInsumo';
 import ListarInsumos from './pages/Insumo/ListarInsumos';
+import EliminarInsumo from './pages/Insumo/EliminarInsumo';
 import CrearCliente from './pages/Cliente/CrearCliente';
 import ListarClientes from './pages/Cliente/ListarClientes';
 import ModificarCliente from './pages/Cliente/ModificarCliente';
+import EliminarCliente from './pages/Cliente/EliminarCliente';
 import CrearMaquina from './pages/Maquina/CrearMaquina';
 import ListarMaquinas from './pages/Maquina/ListarMaquinas';
 import ModificarMaquina from './pages/Maquina/ModificarMaquina';
@@ -19,8 +22,10 @@ import ListarMaquinasEnUso from './pages/MaquinaEnUso/ListarMaquinasEnUso';
 import CrearTecnico from './pages/Tecnico/CrearTecnico';
 import ListarTecnicos from './pages/Tecnico/ListarTecnicos';
 import ModificarTecnico from './pages/Tecnico/ModificarTecnico';
+import EliminarTecnico from './pages/Tecnico/EliminarTecnico';
 import CrearMantenimiento from './pages/Mantenimiento/CrearMantenimiento';
 import ListarMantenimientos from './pages/Mantenimiento/ListarMantenimientos';
+import EliminarMantenimiento from './pages/Mantenimiento/EliminarMantenimiento';
 import CrearRegistroConsumo from './pages/RegistroConsumo/CrearRegistroConsumo';
 import ListarRegistroConsumo from './pages/RegistroConsumo/ListarRegistroConsumo';
 import CrearUsuario from './pages/Usuario/CrearUsuario';
@@ -40,6 +45,7 @@ export default function App() {
           <Route path="/usuario/listar" element={<ListarUsuarios />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
           <Route path="/proveedor/modificar" element={<ModificarProveedor />} />
+          <Route path="/proveedor/eliminar" element={<EliminarProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
           <Route path="/maquina/modificar" element={<ModificarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
@@ -47,8 +53,12 @@ export default function App() {
           <Route path="/tecnico/alta" element={<CrearTecnico />} />
           <Route path="/tecnico/listar" element={<ListarTecnicos />} />
           <Route path="/tecnico/modificar" element={<ModificarTecnico />} />
+          <Route path="/tecnico/eliminar" element={<EliminarTecnico />} />
           <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
           <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
+          <Route path="/cliente/eliminar" element={<EliminarCliente />} />
+          <Route path="/insumo/eliminar" element={<EliminarInsumo />} />
+          <Route path="/mantenimiento/eliminar" element={<EliminarMantenimiento />} />
         </Route>
 
         {/* Routes accessible to all authenticated users */}

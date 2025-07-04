@@ -138,9 +138,14 @@ CREATE USER 'limited_user'@'%' IDENTIFIED BY 'userpass';
 GRANT ALL PRIVILEGES ON marloy.* TO 'admin_user'@'%';
 
 -- Dar acceso limitado al otro usuario
-GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.insumos TO 'limited_user'@'%';
-GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.clientes TO 'limited_user'@'%';
-GRANT SELECT, INSERT, UPDATE, DELETE ON marloy.mantenimientos TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE ON marloy.insumos TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE ON marloy.clientes TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE ON marloy.mantenimientos TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE ON marloy.registro_consumo TO 'limited_user'@'%';
+GRANT SELECT, INSERT, UPDATE ON marloy.maquinas_en_uso TO 'limited_user'@'%';
+GRANT SELECT ON marloy.proveedores TO 'limited_user'@'%';
+GRANT SELECT ON marloy.maquinas TO 'limited_user'@'%';
+
 
 -- Aplicar cambios
 FLUSH PRIVILEGES;

@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
-import re
+from auth_utils import login_required, admin_required
 from datetime import datetime
 
 registro_consumo_bp = Blueprint('registro_consumo_bp', __name__)
 
 
 @registro_consumo_bp.route('/', methods=['GET'])
+@login_required
 def listar_registro_consumo():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -17,6 +18,7 @@ def listar_registro_consumo():
     return jsonify(resultado)
 
 @registro_consumo_bp.route('/', methods=['POST'])
+@admin_required 
 def crear_registro_consumo():
     datos = request.json
     campos = ['id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
@@ -67,6 +69,7 @@ def crear_registro_consumo():
         return jsonify({"error": f"Error al crear registro: {str(e)}"}), 500
 
 @registro_consumo_bp.route('/', methods=['PATCH'])
+@admin_required
 def editar_registro_consumo():
     datos = request.json
     conn = get_connection()
@@ -102,6 +105,7 @@ def editar_registro_consumo():
 
 #Se permite borrar solo por ID
 @registro_consumo_bp.route('/', methods=['DELETE'])
+@admin_required
 def eliminar_registro():
     datos = request.json
     if 'id' not in datos:

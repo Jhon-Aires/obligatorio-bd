@@ -63,6 +63,9 @@ const InicioAdm = () => {
               <Link to="/proveedor/modificar" className={styles.actionBtn}>
                 Modificar Proveedor
               </Link>
+              <Link to="/proveedor/baja" className={styles.actionBtn}>
+                Eliminar Proveedor
+              </Link>
             </div>
           </section>
 
@@ -75,6 +78,9 @@ const InicioAdm = () => {
               </Link>
               <Link to="/insumo/listar" className={styles.actionBtn}>
                 Listar Insumos
+              </Link>
+              <Link to="/insumo/baja" className={styles.actionBtn}>
+                Eliminar Insumo
               </Link>
             </div>
           </section>
@@ -89,8 +95,8 @@ const InicioAdm = () => {
               <Link to="/cliente/listar" className={styles.actionBtn}>
                 Listar Clientes
               </Link>
-              <Link to="/cliente/modificar" className={styles.actionBtn}>
-                Modificar Clientes
+              <Link to="/cliente/baja" className={styles.actionBtn}>
+                Eliminar Cliente
               </Link>
             </div>
           </section>
@@ -124,6 +130,9 @@ const InicioAdm = () => {
               <Link to="/tecnico/modificar" className={styles.actionBtn}>
                 Modificar Técnicos
               </Link>
+              <Link to="/tecnico/baja" className={styles.actionBtn}>
+                Eliminar Técnico
+              </Link>
             </div>
           </section>
 
@@ -136,6 +145,9 @@ const InicioAdm = () => {
               </Link>
               <Link to="/mantenimiento/listar" className={styles.actionBtn}>
                 Listar Mantenimientos
+              </Link>
+              <Link to="/mantenimiento/baja" className={styles.actionBtn}>
+                Eliminar Mantenimiento
               </Link>
             </div>
           </section>

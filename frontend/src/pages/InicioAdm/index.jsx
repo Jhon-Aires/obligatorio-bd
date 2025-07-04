@@ -95,6 +95,9 @@ const InicioAdm = () => {
               <Link to="/cliente/listar" className={styles.actionBtn}>
                 Listar Clientes
               </Link>
+              <Link to="/cliente/modificar" className={styles.actionBtn}>
+                Modificar Cliente
+              </Link>
               <Link to="/cliente/baja" className={styles.actionBtn}>
                 Eliminar Cliente
               </Link>

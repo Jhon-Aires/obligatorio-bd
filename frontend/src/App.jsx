@@ -16,6 +16,7 @@ import ListarMaquinas from './pages/Maquina/ListarMaquinas';
 import ModificarMaquina from './pages/Maquina/ModificarMaquina';
 import CrearMaquinaEnUso from './pages/MaquinaEnUso/CrearMaquinaEnUso';
 import ListarMaquinasEnUso from './pages/MaquinaEnUso/ListarMaquinasEnUso';
+import EliminarAsignacion from './pages/MaquinaEnUso/EliminarAsignacion';
 import CrearTecnico from './pages/Tecnico/CrearTecnico';
 import ListarTecnicos from './pages/Tecnico/ListarTecnicos';
 import ModificarTecnico from './pages/Tecnico/ModificarTecnico';
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/maquina/modificar" element={<ModificarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
           <Route path="/maquinaenuso/listar" element={<ListarMaquinasEnUso />} />
+          <Route path="/maquinaenuso/baja" element={<EliminarAsignacion />} />
           <Route path="/tecnico/alta" element={<CrearTecnico />} />
           <Route path="/tecnico/listar" element={<ListarTecnicos />} />
           <Route path="/tecnico/modificar" element={<ModificarTecnico />} />

@@ -100,23 +100,7 @@ def eliminar_maquina_en_uso():
 
     conn = get_connection() 
     cursor = conn.cursor()
-        # Consultar si tiene registros de consumo esta maquina
-    cursor.execute(
-        "SELECT COUNT(*) FROM registro_consumo WHERE id_maquina_en_uso = %s",(datos['id'],))
-    cantidad_registros = cursor.fetchone()[0]
-    
-    if cantidad_registros > 0:
-        return (jsonify({"error": f"La máquina en uso tiene {cantidad_registros} registro(s) en uso. Elimine dichos registros."}),409)
-    
-    #Se consulta si tiene mantenimientos esta máquina
-    cursor.execute(
-        "SELECT COUNT(*) FROM mantenimientos WHERE id_maquina_en_uso = %s",(datos['id'],))
-    cantidad_mantenimientos = cursor.fetchone()[0]
-    
-    if cantidad_mantenimientos > 0:
-        return (jsonify({"error": f"La máquina en uso tiene {cantidad_mantenimientos} mantenimiento(s) agendados. Elimine dichos mantenimientos."}),409)
-       
-    #Elimina maquina en uso
+    # Elimina maquina en uso
     cursor.execute(
         "DELETE FROM maquinas_en_uso WHERE id = %s",(datos['id'],))
     conn.commit()

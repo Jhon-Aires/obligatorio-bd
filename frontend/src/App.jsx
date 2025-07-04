@@ -28,8 +28,10 @@ import ListarMantenimientos from './pages/Mantenimiento/ListarMantenimientos';
 import EliminarMantenimiento from './pages/Mantenimiento/EliminarMantenimiento';
 import CrearRegistroConsumo from './pages/RegistroConsumo/CrearRegistroConsumo';
 import ListarRegistroConsumo from './pages/RegistroConsumo/ListarRegistroConsumo';
+import EliminarRegistroConsumo from './pages/RegistroConsumo/EliminarRegistro';
 import CrearUsuario from './pages/Usuario/CrearUsuario';
 import ListarUsuarios from './pages/Usuario/ListarUsuarios';
+import ModificarUsuario from './pages/Usuario/ModificarUsuario';
 
 export default function App() {
   return (
@@ -43,6 +45,7 @@ export default function App() {
           <Route path="/inicioadm" element={<Inicioadm />} />
           <Route path="/usuario/crear" element={<CrearUsuario />} />
           <Route path="/usuario/listar" element={<ListarUsuarios />} />
+          <Route path="/usuario/modificar" element={<ModificarUsuario />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
           <Route path="/proveedor/modificar" element={<ModificarProveedor />} />
           <Route path="/proveedor/eliminar" element={<EliminarProveedor />} />
@@ -59,6 +62,7 @@ export default function App() {
           <Route path="/cliente/eliminar" element={<EliminarCliente />} />
           <Route path="/insumo/eliminar" element={<EliminarInsumo />} />
           <Route path="/mantenimiento/eliminar" element={<EliminarMantenimiento />} />
+          <Route path="/registroconsumo/baja" element={<EliminarRegistroConsumo />} />
         </Route>
 
         {/* Routes accessible to all authenticated users */}

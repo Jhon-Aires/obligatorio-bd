@@ -5,6 +5,7 @@ import InicioUsuario from './pages/InicioUsuario';
 import Login from "./pages/Login";
 import CrearProveedor from './pages/Proveedor/CrearProveedor';
 import ListarProveedores from './pages/Proveedor/ListarProveedores';
+import ModificarProveedor from './pages/Proveedor/ModificarProveedor';
 import CrearInsumo from './pages/Insumo/CrearInsumo';
 import ListarInsumos from './pages/Insumo/ListarInsumos';
 import CrearCliente from './pages/Cliente/CrearCliente';
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/usuario/crear" element={<CrearUsuario />} />
           <Route path="/usuario/listar" element={<ListarUsuarios />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
+          <Route path="/proveedor/modificar" element={<ModificarProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
           <Route path="/maquina/modificar" element={<ModificarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />

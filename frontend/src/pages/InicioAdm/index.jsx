@@ -60,6 +60,9 @@ const InicioAdm = () => {
               <Link to="/proveedor/listar" className={styles.actionBtn}>
                 Listar Proveedores
               </Link>
+              <Link to="/proveedor/modificar" className={styles.actionBtn}>
+                Modificar Proveedor
+              </Link>
             </div>
           </section>
 

@@ -16,6 +16,7 @@ const CrearRegistroConsumo = () => {
   const [message, setMessage] = useState({ type: "", text: "" });
   const [maquinasEnUso, setMaquinasEnUso] = useState([]);
   const [insumos, setInsumos] = useState([]);
+  const [clientes, setClientes] = useState([]);
 
   useEffect(() => {
     // Cargar máquinas en uso
@@ -41,7 +42,25 @@ const CrearRegistroConsumo = () => {
           text: "Error al cargar los insumos"
         });
       });
+
+    // Cargar clientes para mostrar nombres en lugar de IDs
+    fetchFromApi("/clientes/")
+      .then((response) => response.json())
+      .then((data) => setClientes(data))
+      .catch((error) => {
+        console.error("Error fetching clientes:", error);
+        setMessage({
+          type: "error",
+          text: "Error al cargar los clientes"
+        });
+      });
   }, []);
+
+  // Función para obtener el nombre del cliente por ID
+  const getClienteName = (clienteId) => {
+    const cliente = clientes.find(c => c.id === clienteId);
+    return cliente ? cliente.nombre : `Cliente ID: ${clienteId}`;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,7 +118,7 @@ const CrearRegistroConsumo = () => {
               <option value="">Seleccione una máquina</option>
               {maquinasEnUso.map((maquina) => (
                 <option key={maquina.id} value={maquina.id}>
-                  {`ID: ${maquina.id} - Modelo: ${maquina.modelo} - Cliente: ${maquina.id_cliente}`}
+                  {`Modelo: ${maquina.modelo} - ${getClienteName(maquina.id_cliente)} - Ubicación: ${maquina.ubicacion_cliente}`}
                 </option>
               ))}
             </select>
@@ -118,7 +137,7 @@ const CrearRegistroConsumo = () => {
               <option value="">Seleccione un insumo</option>
               {insumos.map((insumo) => (
                 <option key={insumo.id} value={insumo.id}>
-                  {`${insumo.descripcion} - Tipo: ${insumo.tipo}`}
+                  {`${insumo.descripcion} - Tipo: ${insumo.tipo} - Precio: $${insumo.precio_unitario}`}
                 </option>
               ))}
             </select>

@@ -114,7 +114,7 @@ const CrearMaquinaEnUso = () => {
               <option value="">Seleccione un modelo</option>
               {maquinas.map((maquina) => (
                 <option key={maquina.modelo} value={maquina.modelo}>
-                  {maquina.modelo}
+                  {`${maquina.modelo} - Costo Alquiler: $${maquina.costo_alquiler_mensual}`}
                 </option>
               ))}
             </select>
@@ -125,7 +125,7 @@ const CrearMaquinaEnUso = () => {
             <select
               id="id_cliente"
               name="id_cliente"
-              value={formData.id}
+              value={formData.id_cliente}
               onChange={handleChange}
               className={styles.input}
               required
@@ -133,7 +133,7 @@ const CrearMaquinaEnUso = () => {
               <option value="">Seleccione un cliente</option>
               {clientes.map((cliente) => (
                 <option key={cliente.id} value={cliente.id}>
-                  {`${cliente.nombre} - ID: ${cliente.id}`}
+                  {`${cliente.nombre} - Dirección: ${cliente.direccion} - Contacto: ${cliente.contacto}`}
                 </option>
               ))}
             </select>

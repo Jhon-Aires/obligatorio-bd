@@ -152,6 +152,9 @@ const InicioAdm = () => {
               <Link to='/mantenimiento/listar' className={styles.actionBtn}>
                 Listar Mantenimientos
               </Link>
+              <Link to='/mantenimiento/modificar' className={styles.actionBtn}>
+                Modificar Mantenimiento
+              </Link>
               <Link to='/mantenimiento/baja' className={styles.actionBtn}>
                 Eliminar Mantenimiento
               </Link>

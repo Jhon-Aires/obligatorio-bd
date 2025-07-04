@@ -34,6 +34,7 @@ import EliminarRegistroConsumo from './pages/RegistroConsumo/EliminarRegistro';
 import CrearUsuario from './pages/Usuario/CrearUsuario';
 import ListarUsuarios from './pages/Usuario/ListarUsuarios';
 import ModificarUsuario from './pages/Usuario/ModificarUsuario';
+import ModificarMantenimiento from './pages/Mantenimiento/ModificarMantenimiento';
 
 export default function App() {
   return (
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/insumo/alta" element={<CrearInsumo />} />
           <Route path="/insumo/listar" element={<ListarInsumos />} />
           <Route path="/mantenimiento/alta" element={<CrearMantenimiento />} />
+          <Route path="/mantenimiento/modificar" element={<ModificarMantenimiento />} />
           <Route path="/mantenimiento/listar" element={<ListarMantenimientos />} />
           <Route path="/maquina/listar" element={<ListarMaquinas />} />
           <Route path="/proveedor/listar" element={<ListarProveedores />} />

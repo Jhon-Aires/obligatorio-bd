@@ -85,13 +85,19 @@ def editar_cliente():
         campos_permitidos = ['nombre', 'direccion', 'contacto', 'correo']
         for campo in campos_permitidos:
             if campo in datos:
-                campos_actualizados.append(f"{campo} = %s")
-                values.append(datos[campo])
+                # Verificar que el valor del campo no esté vacío
+                if datos[campo] is not None and str(datos[campo]).strip() != "":
+                    campos_actualizados.append(f"{campo} = %s")
+                    values.append(datos[campo])
 
         if not campos_actualizados:
             return jsonify({"error": "No hay campos para actualizar"}), 400
         
         values.append(datos['id'])  # Como ya tenemos el id, se usa en la condición WHERE
+
+        cursor.execute("SELECT COUNT(*) FROM clientes WHERE id = %s", (datos['id'],))
+        if cursor.fetchone()[0] == 0:
+            return jsonify({"error": "Cliente no encontrado"}), 404
         
         query = f"""
             UPDATE clientes
@@ -101,8 +107,6 @@ def editar_cliente():
         cursor.execute(query, values)
         conn.commit()
         
-        if cursor.rowcount == 0:
-            return jsonify({"error": "Cliente no encontrado"}), 404
             
         cursor.close()
         conn.close()

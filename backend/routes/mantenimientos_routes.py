@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
-import re
+from auth_utils import admin_required, login_required
 from datetime import datetime
 
 mantenimientos_bp = Blueprint('mantenimeintos_bp', __name__)
 
 
 @mantenimientos_bp.route('/', methods=['GET'])
+@login_required
 def listar_mantenimientos():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -17,6 +18,7 @@ def listar_mantenimientos():
     return jsonify(resultado)
 
 @mantenimientos_bp.route('/', methods=['POST'])
+@login_required
 def crear_mantenimiento():
     datos = request.json
     campos = ['id_maquina_en_uso', 'ci_tecnico', 'tipo', 'fecha', 'observaciones']
@@ -65,6 +67,7 @@ def crear_mantenimiento():
         return jsonify({"error": f"Error al crear mantenimiento: {str(e)}"}), 500
 
 @mantenimientos_bp.route('/', methods=['PATCH'])
+@login_required
 def editar_mantenimiento():
     datos = request.json
     if not datos or 'id' not in datos:
@@ -160,6 +163,7 @@ def editar_mantenimiento():
     
 #Se permite borrar solo por ID
 @mantenimientos_bp.route('/', methods=['DELETE'])
+@admin_required
 def eliminar_mantenimiento():
     datos = request.json
     if 'id' not in datos:

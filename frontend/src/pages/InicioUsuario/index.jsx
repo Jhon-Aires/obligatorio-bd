@@ -43,6 +43,9 @@ const InicioUsuario = () => {
               <Link to='/cliente/listar' className={styles.actionBtn}>
                 Listar Clientes
               </Link>
+              <Link to='/cliente/modificar' className={styles.actionBtn}>
+                Modificar Clientes
+              </Link>
             </div>
           </section>
 
@@ -50,11 +53,11 @@ const InicioUsuario = () => {
           <section className={styles.section}>
             <h3>📦 Gestión de Insumos</h3>
             <div className={styles.buttonGroup}>
-              <Link to='/insumo/alta' className={styles.actionBtn}>
-                Crear Insumo
-              </Link>
               <Link to='/insumo/listar' className={styles.actionBtn}>
                 Listar Insumos
+              </Link>
+              <Link to='/insumo/alta' className={styles.actionBtn}>
+                Crear Insumo
               </Link>
             </div>
           </section>
@@ -63,36 +66,27 @@ const InicioUsuario = () => {
           <section className={styles.section}>
             <h3>🔧 Gestión de Mantenimientos</h3>
             <div className={styles.buttonGroup}>
-              <Link to='/mantenimiento/alta' className={styles.actionBtn}>
-                Crear Mantenimiento
-              </Link>
               <Link to='/mantenimiento/listar' className={styles.actionBtn}>
                 Listar Mantenimientos
               </Link>
+              <Link to='/mantenimiento/alta' className={styles.actionBtn}>
+                Crear Mantenimiento
+              </Link>
+              <Link to='/mantenimiento/modificar' className={styles.actionBtn}>
+                Modificar Mantenimiento
+              </Link>
             </div>
           </section>
-
-          {/* Información de Solo Lectura */}
+          
+          {/* Maquinas */}
           <section className={styles.section}>
-            <h3>👀 Solo Consulta</h3>
+            <h3>🔧 Gestión de Maquinas</h3>
             <div className={styles.buttonGroup}>
               <Link to='/maquina/listar' className={styles.actionBtn}>
-                Ver Máquinas
-              </Link>
-              <Link to='/proveedor/listar' className={styles.actionBtn}>
-                Ver Proveedores
+                Listar Maquinas
               </Link>
             </div>
           </section>
-        </div>
-
-        <div className={styles.info}>
-          <h4>ℹ️ Información Importante</h4>
-          <ul>
-            <li>Puedes gestionar clientes, insumos y mantenimientos</li>
-            <li>Solo puedes consultar información de máquinas y proveedores</li>
-            <li>Para funciones administrativas, contacta al administrador</li>
-          </ul>
         </div>
       </main>
     </div>

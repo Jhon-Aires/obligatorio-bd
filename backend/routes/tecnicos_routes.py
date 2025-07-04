@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
+from auth_utils import login_required, admin_required
 import re
 
 tecnicos_bp = Blueprint('tecnicos_bp', __name__)
 @tecnicos_bp.route('/', methods=['GET'])
+@login_required
 def listar_tecnicos():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -14,6 +16,8 @@ def listar_tecnicos():
     return jsonify(resultado)
 
 @tecnicos_bp.route('/', methods=['POST'])
+
+@admin_required 
 def crear_tecnico():
     datos = request.json
     campos = ['ci', 'nombre', 'apellido', 'contacto']
@@ -56,6 +60,7 @@ def crear_tecnico():
 
 
 @tecnicos_bp.route('/', methods=['PATCH'])
+@login_required
 def editar_tecnico():
     datos = request.json
     conn = get_connection()
@@ -92,6 +97,7 @@ def editar_tecnico():
 
 # #Se permite borrar solo por CI
 @tecnicos_bp.route('/', methods=['DELETE'])
+@login_required
 def eliminar_tecnico():
     datos = request.json
     if 'ci' not in datos:
@@ -107,6 +113,7 @@ def eliminar_tecnico():
 
 
 @tecnicos_bp.route('/mantenimientos', methods=['GET'])
+@login_required
 def tecnicos_ordenados_por_mantenimientos():
     conn = get_connection()
     #cada fila que devuelve la consulta venga como un diccionario, no como una tupla.

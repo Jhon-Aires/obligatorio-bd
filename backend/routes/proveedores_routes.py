@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from db import get_connection
 from auth_utils import login_required, admin_required
-import re
 
 proveedores_bp = Blueprint('proveedores_bp', __name__)
 
@@ -58,6 +57,7 @@ def crear_proveedor():
         return jsonify({"error": f"Error al crear proveedor: {str(e)}"}), 500
 
 @proveedores_bp.route('/', methods=['PATCH'])
+@admin_required
 def editar_proveedor():
     datos = request.json
     conn = get_connection()
@@ -94,6 +94,7 @@ def editar_proveedor():
 
 # Se permite borrar solo por ID
 @proveedores_bp.route('/', methods=['DELETE'])
+@admin_required
 def eliminar_proveedor():
     datos = request.json
     if 'id' not in datos:

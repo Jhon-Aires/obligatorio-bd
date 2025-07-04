@@ -29,7 +29,8 @@ const InicioAdm = () => {
       <main className={styles.main}>
         <h2>Bienvenido al Panel de Administración</h2>
         <p>
-          Como administrador, tienes acceso completo a todas las funcionalidades del sistema:
+          Como administrador, tienes acceso completo a todas las funcionalidades
+          del sistema:
         </p>
 
         <div className={styles.sectionsGrid}>
@@ -42,6 +43,9 @@ const InicioAdm = () => {
               </Link>
               <Link to='/usuario/listar' className={styles.actionBtn}>
                 Listar Usuarios
+              </Link>
+              <Link to='/usuario/modificar' className={styles.actionBtn}>
+                Modificar Usuarios
               </Link>
             </div>
           </section>
@@ -56,6 +60,12 @@ const InicioAdm = () => {
               <Link to='/proveedor/listar' className={styles.actionBtn}>
                 Listar Proveedores
               </Link>
+              <Link to='/proveedor/modificar' className={styles.actionBtn}>
+                Modificar Proveedor
+              </Link>
+              <Link to='/proveedor/baja' className={styles.actionBtn}>
+                Eliminar Proveedor
+              </Link>
             </div>
           </section>
 
@@ -68,6 +78,9 @@ const InicioAdm = () => {
               </Link>
               <Link to='/insumo/listar' className={styles.actionBtn}>
                 Listar Insumos
+              </Link>
+              <Link to='/insumo/baja' className={styles.actionBtn}>
+                Eliminar Insumo
               </Link>
             </div>
           </section>
@@ -82,6 +95,12 @@ const InicioAdm = () => {
               <Link to='/cliente/listar' className={styles.actionBtn}>
                 Listar Clientes
               </Link>
+              <Link to="/cliente/modificar" className={styles.actionBtn}>
+                Modificar Cliente
+              </Link>
+              <Link to="/cliente/baja" className={styles.actionBtn}>
+                Eliminar Cliente
+              </Link>
             </div>
           </section>
 
@@ -94,6 +113,12 @@ const InicioAdm = () => {
               </Link>
               <Link to='/maquina/listar' className={styles.actionBtn}>
                 Listar Máquinas
+              </Link>
+              <Link to='/maquina/modificar' className={styles.actionBtn}>
+                Modificar Máquinas
+              </Link>
+              <Link to='/maquina/baja' className={styles.actionBtn}>
+                Eliminar Máquina
               </Link>
             </div>
           </section>
@@ -108,6 +133,12 @@ const InicioAdm = () => {
               <Link to='/tecnico/listar' className={styles.actionBtn}>
                 Listar Técnicos
               </Link>
+              <Link to='/tecnico/modificar' className={styles.actionBtn}>
+                Modificar Técnicos
+              </Link>
+              <Link to='/tecnico/baja' className={styles.actionBtn}>
+                Eliminar Técnico
+              </Link>
             </div>
           </section>
 
@@ -120,6 +151,12 @@ const InicioAdm = () => {
               </Link>
               <Link to='/mantenimiento/listar' className={styles.actionBtn}>
                 Listar Mantenimientos
+              </Link>
+              <Link to='/mantenimiento/modificar' className={styles.actionBtn}>
+                Modificar Mantenimiento
+              </Link>
+              <Link to='/mantenimiento/baja' className={styles.actionBtn}>
+                Eliminar Mantenimiento
               </Link>
             </div>
           </section>
@@ -155,15 +192,6 @@ const InicioAdm = () => {
               </Link>
             </div>
           </section>
-        </div>
-
-        <div className={styles.info}>
-          <h4>ℹ️ Información Importante</h4>
-          <ul>
-            <li>Tienes acceso completo a todas las funcionalidades del sistema</li>
-            <li>Puedes gestionar usuarios, proveedores, máquinas y más</li>
-            <li>Recuerda mantener actualizada la información del sistema</li>
-          </ul>
         </div>
       </main>
     </div>

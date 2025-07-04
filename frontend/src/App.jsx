@@ -48,7 +48,7 @@ export default function App() {
           <Route path="/usuario/modificar" element={<ModificarUsuario />} />
           <Route path="/proveedor/alta" element={<CrearProveedor />} />
           <Route path="/proveedor/modificar" element={<ModificarProveedor />} />
-          <Route path="/proveedor/eliminar" element={<EliminarProveedor />} />
+          <Route path="/proveedor/baja" element={<EliminarProveedor />} />
           <Route path="/maquina/alta" element={<CrearMaquina />} />
           <Route path="/maquina/modificar" element={<ModificarMaquina />} />
           <Route path="/maquinaenuso/alta" element={<CrearMaquinaEnUso />} />
@@ -56,12 +56,12 @@ export default function App() {
           <Route path="/tecnico/alta" element={<CrearTecnico />} />
           <Route path="/tecnico/listar" element={<ListarTecnicos />} />
           <Route path="/tecnico/modificar" element={<ModificarTecnico />} />
-          <Route path="/tecnico/eliminar" element={<EliminarTecnico />} />
+          <Route path="/tecnico/baja" element={<EliminarTecnico />} />
           <Route path="/registroconsumo/alta" element={<CrearRegistroConsumo />} />
           <Route path="/registroconsumo/listar" element={<ListarRegistroConsumo />} />
-          <Route path="/cliente/eliminar" element={<EliminarCliente />} />
-          <Route path="/insumo/eliminar" element={<EliminarInsumo />} />
-          <Route path="/mantenimiento/eliminar" element={<EliminarMantenimiento />} />
+          <Route path="/cliente/baja" element={<EliminarCliente />} />
+          <Route path="/insumo/baja" element={<EliminarInsumo />} />
+          <Route path="/mantenimiento/baja" element={<EliminarMantenimiento />} />
           <Route path="/registroconsumo/baja" element={<EliminarRegistroConsumo />} />
         </Route>
 

@@ -63,7 +63,7 @@ const InicioAdm = () => {
               <Link to="/proveedor/modificar" className={styles.actionBtn}>
                 Modificar Proveedor
               </Link>
-              <Link to="/proveedor/eliminar" className={styles.actionBtn}>
+              <Link to="/proveedor/baja" className={styles.actionBtn}>
                 Eliminar Proveedor
               </Link>
             </div>
@@ -79,7 +79,7 @@ const InicioAdm = () => {
               <Link to="/insumo/listar" className={styles.actionBtn}>
                 Listar Insumos
               </Link>
-              <Link to="/insumo/eliminar" className={styles.actionBtn}>
+              <Link to="/insumo/baja" className={styles.actionBtn}>
                 Eliminar Insumo
               </Link>
             </div>
@@ -95,7 +95,7 @@ const InicioAdm = () => {
               <Link to="/cliente/listar" className={styles.actionBtn}>
                 Listar Clientes
               </Link>
-              <Link to="/cliente/eliminar" className={styles.actionBtn}>
+              <Link to="/cliente/baja" className={styles.actionBtn}>
                 Eliminar Cliente
               </Link>
             </div>
@@ -130,7 +130,7 @@ const InicioAdm = () => {
               <Link to="/tecnico/modificar" className={styles.actionBtn}>
                 Modificar Técnicos
               </Link>
-              <Link to="/tecnico/eliminar" className={styles.actionBtn}>
+              <Link to="/tecnico/baja" className={styles.actionBtn}>
                 Eliminar Técnico
               </Link>
             </div>
@@ -146,7 +146,7 @@ const InicioAdm = () => {
               <Link to="/mantenimiento/listar" className={styles.actionBtn}>
                 Listar Mantenimientos
               </Link>
-              <Link to="/mantenimiento/eliminar" className={styles.actionBtn}>
+              <Link to="/mantenimiento/baja" className={styles.actionBtn}>
                 Eliminar Mantenimiento
               </Link>
             </div>

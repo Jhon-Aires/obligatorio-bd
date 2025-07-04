@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS mantenimientos (
 
 
 CREATE TABLE IF NOT EXISTS registro_consumo (
-    id VARCHAR(35) PRIMARY KEY, 
+    id INT AUTO_INCREMENT PRIMARY KEY, 
     id_maquina_en_uso INT NOT NULL, 
     id_insumo  INT NOT NULL, 
     fecha DATE NOT NULL, 
@@ -126,9 +126,9 @@ INSERT INTO mantenimientos (id, id_maquina_en_uso, ci_tecnico, tipo, fecha, obse
     (2, 2, 50871234, 'Lubricación general', '2025-05-15 10:00:00', 'Aplicado aceite de alto rendimiento');
 
 INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES
-    ('rc-001', 1, 1, '2025-05-10', 5),
-    ('rc-002', 2, 2, '2025-05-11', 2),
-    ('rc-003', 1, 3, '2025-05-12', 10);
+    (1, 1, 1, '2025-05-10', 5),
+    (2, 2, 2, '2025-05-11', 2),
+    (3, 1, 3, '2025-05-12', 10);
 
 -- Crear los usuarios de MySQL
 CREATE USER 'admin_user'@'%' IDENTIFIED BY 'adminpass';

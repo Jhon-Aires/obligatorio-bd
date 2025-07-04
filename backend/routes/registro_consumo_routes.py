@@ -19,7 +19,7 @@ def listar_registro_consumo():
 @registro_consumo_bp.route('/', methods=['POST'])
 def crear_registro_consumo():
     datos = request.json
-    campos = ['id', 'id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
+    campos = ['id_maquina_en_uso', 'id_insumo', 'fecha', 'cantidad_usada']
 
     if not datos:
         return jsonify({"error": "Ingrese sus datos correctamente"}), 400
@@ -30,7 +30,7 @@ def crear_registro_consumo():
 
         valor = datos[campo]
 
-        if campo in ['id', 'id_maquina_en_uso', 'id_insumo']:
+        if campo in ['id_maquina_en_uso', 'id_insumo']:
             if not str(valor).isdigit() or int(valor) <= 0:
                 return jsonify({"error": f"El campo '{campo}' debe ser un entero positivo"}), 400
 
@@ -51,9 +51,8 @@ def crear_registro_consumo():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO registro_consumo (id, id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES (%s, %s, %s, %s, %s)",
+            "INSERT INTO registro_consumo (id_maquina_en_uso, id_insumo, fecha, cantidad_usada) VALUES (%s, %s, %s, %s)",
             (
-                datos['id'],
                 datos['id_maquina_en_uso'],
                 datos['id_insumo'],
                 datos['fecha'],

@@ -9,6 +9,7 @@ import CrearInsumo from './pages/Insumo/CrearInsumo';
 import ListarInsumos from './pages/Insumo/ListarInsumos';
 import CrearCliente from './pages/Cliente/CrearCliente';
 import ListarClientes from './pages/Cliente/ListarClientes';
+import ModificarCliente from './pages/Cliente/ModificarCliente';
 import CrearMaquina from './pages/Maquina/CrearMaquina';
 import ListarMaquinas from './pages/Maquina/ListarMaquinas';
 import CrearMaquinaEnUso from './pages/MaquinaEnUso/CrearMaquinaEnUso';
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/iniciousuario" element={<InicioUsuario />} />
           <Route path="/cliente/alta" element={<CrearCliente />} />
           <Route path="/cliente/listar" element={<ListarClientes />} />
+          <Route path="/cliente/modificar" element={<ModificarCliente />} />
           <Route path="/insumo/alta" element={<CrearInsumo />} />
           <Route path="/insumo/listar" element={<ListarInsumos />} />
           <Route path="/mantenimiento/alta" element={<CrearMantenimiento />} />

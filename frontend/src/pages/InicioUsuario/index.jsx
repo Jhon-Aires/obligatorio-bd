@@ -43,6 +43,9 @@ const InicioUsuario = () => {
               <Link to='/cliente/listar' className={styles.actionBtn}>
                 Listar Clientes
               </Link>
+              <Link to='/cliente/modificar' className={styles.actionBtn}>
+                Modificar Clientes
+              </Link>
             </div>
           </section>
 
@@ -50,9 +53,6 @@ const InicioUsuario = () => {
           <section className={styles.section}>
             <h3>📦 Gestión de Insumos</h3>
             <div className={styles.buttonGroup}>
-              <Link to='/insumo/alta' className={styles.actionBtn}>
-                Crear Insumo
-              </Link>
               <Link to='/insumo/listar' className={styles.actionBtn}>
                 Listar Insumos
               </Link>
@@ -63,24 +63,8 @@ const InicioUsuario = () => {
           <section className={styles.section}>
             <h3>🔧 Gestión de Mantenimientos</h3>
             <div className={styles.buttonGroup}>
-              <Link to='/mantenimiento/alta' className={styles.actionBtn}>
-                Crear Mantenimiento
-              </Link>
               <Link to='/mantenimiento/listar' className={styles.actionBtn}>
                 Listar Mantenimientos
-              </Link>
-            </div>
-          </section>
-
-          {/* Información de Solo Lectura */}
-          <section className={styles.section}>
-            <h3>👀 Solo Consulta</h3>
-            <div className={styles.buttonGroup}>
-              <Link to='/maquina/listar' className={styles.actionBtn}>
-                Ver Máquinas
-              </Link>
-              <Link to='/proveedor/listar' className={styles.actionBtn}>
-                Ver Proveedores
               </Link>
             </div>
           </section>

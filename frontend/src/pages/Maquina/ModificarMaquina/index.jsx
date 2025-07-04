@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { fetchFromApi } from "../../../services/fetch";
 import styles from "../../common.module.css";
 
-const CrearCliente = () => {
+const ModificarMaquina = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    id: "",
     nombre: "",
     direccion: "",
     contacto: "",
@@ -24,27 +25,36 @@ const CrearCliente = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    if (!formData.id) {
+      setMessage({ type: "error", text: "Por favor ingrese el ID del cliente" });
+      return;
+    }
+    
     try {
       const response = await fetchFromApi("/clientes/", {
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify(formData),
       });
+      
       if (!response.ok) {
-        throw new Error("Error al crear cliente");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al modificar cliente");
       }
-      setMessage({ type: "success", text: "Cliente creado con éxito" });
+      
+      setMessage({ type: "success", text: "Cliente modificado con éxito" });
       setTimeout(() => {
         navigate("/cliente/listar");
       }, 2000);
     } catch (error) {
       console.error("Error:", error);
-      setMessage({ type: "error", text: "Error al crear cliente" });
+      setMessage({ type: "error", text: error.message || "Error al modificar cliente" });
     }
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Crear Nuevo Cliente</h1>
+      <h1 className={styles.title}>Modificar Cliente</h1>
       
       <div className={styles.card}>
         {message.text && (
@@ -55,6 +65,20 @@ const CrearCliente = () => {
         
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
+            <label htmlFor="id" className={styles.label}>ID del Cliente</label>
+            <input
+              id="id"
+              name="id"
+              type="number"
+              value={formData.id}
+              onChange={handleChange}
+              className={styles.input}
+              required
+              placeholder="Ingrese el ID del cliente a modificar"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
             <label htmlFor="nombre" className={styles.label}>Nombre</label>
             <input
               id="nombre"
@@ -63,7 +87,6 @@ const CrearCliente = () => {
               value={formData.nombre}
               onChange={handleChange}
               className={styles.input}
-              required
             />
           </div>
 
@@ -76,7 +99,6 @@ const CrearCliente = () => {
               value={formData.direccion}
               onChange={handleChange}
               className={styles.input}
-              required
             />
           </div>
 
@@ -105,7 +127,7 @@ const CrearCliente = () => {
           </div>
 
           <button type="submit" className={styles.button}>
-            Crear Cliente
+            Modificar Máquina
           </button>
         </form>
       </div>
@@ -113,4 +135,4 @@ const CrearCliente = () => {
   );
 };
 
-export default CrearCliente;
+export default ModificarMaquina;

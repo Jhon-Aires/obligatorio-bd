@@ -85,8 +85,10 @@ def editar_cliente():
         campos_permitidos = ['nombre', 'direccion', 'contacto', 'correo']
         for campo in campos_permitidos:
             if campo in datos:
-                campos_actualizados.append(f"{campo} = %s")
-                values.append(datos[campo])
+                # Verificar que el valor del campo no esté vacío
+                if datos[campo] is not None and str(datos[campo]).strip() != "":
+                    campos_actualizados.append(f"{campo} = %s")
+                    values.append(datos[campo])
 
         if not campos_actualizados:
             return jsonify({"error": "No hay campos para actualizar"}), 400

@@ -144,6 +144,7 @@ GRANT SELECT, INSERT, UPDATE ON marloy.mantenimientos TO 'limited_user'@'%';
 GRANT SELECT, INSERT, UPDATE ON marloy.registro_consumo TO 'limited_user'@'%';
 GRANT SELECT, INSERT, UPDATE ON marloy.maquinas_en_uso TO 'limited_user'@'%';
 GRANT SELECT ON marloy.proveedores TO 'limited_user'@'%';
+GRANT SELECT ON marloy.tecnicos TO 'limited_user'@'%';
 GRANT SELECT ON marloy.maquinas TO 'limited_user'@'%';
 
 

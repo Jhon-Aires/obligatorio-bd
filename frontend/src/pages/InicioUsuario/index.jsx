@@ -88,15 +88,6 @@ const InicioUsuario = () => {
             </div>
           </section>
         </div>
-
-        <div className={styles.info}>
-          <h4>ℹ️ Información Importante</h4>
-          <ul>
-            <li>Puedes gestionar clientes, insumos y mantenimientos</li>
-            <li>Solo puedes consultar información de máquinas y proveedores</li>
-            <li>Para funciones administrativas, contacta al administrador</li>
-          </ul>
-        </div>
       </main>
     </div>
   );
